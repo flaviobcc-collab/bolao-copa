@@ -26,3 +26,4 @@ Depois ajuste seu usuário na tabela `participantes` para `perfil = admin`.
 - Meus palpites com placar oficial e pontuação
 - Ver palpites com seletor de participante
 - Ranking automático
+- Atualizando deploy v4
