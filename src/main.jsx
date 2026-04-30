@@ -738,3 +738,20 @@ function calcularPremiacao(totalParticipantes, valor, taxa) {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+async function gerarPix(email) {
+  const res = await fetch('https://api.mercadopago.com/v1/payments', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer SEU_TOKEN_AQUI',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      transaction_amount: 20,
+      description: 'Bolão Copa 2026',
+      payment_method_id: 'pix',
+      payer: { email }
+    })
+  });
+
+  return await res.json();
+}
