@@ -415,7 +415,7 @@ function MinhaParticipacao({user, profile, setProfile, show}) {
         </button>
       </div>
 
-      {qrBase64 && (
+     {status !== 'confirmado' && qrBase64 && (
         <div className="pix-area">
           <h3>Escaneie o QR Code Pix</h3>
 
