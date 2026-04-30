@@ -1,33 +1,31 @@
+import { createClient } from '@supabase/supabase-js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
   try {
-    const { email, nome } = req.body || {};
+    const { user_id, email, nome } = req.body || {};
 
-    if (!email) {
-      return res.status(400).json({ error: 'E-mail obrigatório para gerar Pix.' });
+    if (!user_id || !email) {
+      return res.status(400).json({ error: 'user_id e email são obrigatórios.' });
     }
-
-    const idempotencyKey =
-      typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`;
 
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
-        'X-Idempotency-Key': idempotencyKey
+        'X-Idempotency-Key': crypto.randomUUID()
       },
       body: JSON.stringify({
         transaction_amount: 20,
         description: 'Participação Bolão da Copa 2026',
         payment_method_id: 'pix',
+        external_reference: user_id,
         payer: {
-          email: email,
+          email,
           first_name: nome || 'Participante'
         }
       })
@@ -42,11 +40,30 @@ export default async function handler(req, res) {
       });
     }
 
+    const qrCode = data.point_of_interaction?.transaction_data?.qr_code;
+    const qrCodeBase64 = data.point_of_interaction?.transaction_data?.qr_code_base64;
+
+    const supabaseAdmin = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    await supabaseAdmin
+      .from('participantes')
+      .update({
+        pagamento_status: 'pendente',
+        pagamento_id: String(data.id),
+        pagamento_valor: 20,
+        pix_qrcode: qrCodeBase64,
+        pix_copia_cola: qrCode
+      })
+      .eq('id', user_id);
+
     return res.status(200).json({
       id: data.id,
       status: data.status,
-      qr_code: data.point_of_interaction?.transaction_data?.qr_code,
-      qr_code_base64: data.point_of_interaction?.transaction_data?.qr_code_base64
+      qr_code: qrCode,
+      qr_code_base64: qrCodeBase64
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
