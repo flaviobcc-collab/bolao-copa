@@ -321,3 +321,46 @@ h1 {
     font-size: 38px;
   }
 }
+.terms {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+  padding: clamp(24px, 5vw, 54px);
+  max-width: 900px;
+  margin: 24px auto;
+}
+
+.terms h1 {
+  color: var(--green-dark);
+  font-size: clamp(34px, 5vw, 54px);
+  margin-bottom: 18px;
+}
+
+.terms h2 {
+  margin-top: 28px;
+  color: var(--green);
+}
+
+.terms p,
+.terms li {
+  color: #4f635a;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+.back-link {
+  color: var(--green);
+  font-weight: 950;
+}
+
+.terms-actions {
+  margin-top: 34px;
+}
+
+.btn.dark,
+.btn.secondary.dark {
+  background: #e9f1ed;
+  color: var(--green-dark);
+  border: 1px solid #d9e8df;
+}
