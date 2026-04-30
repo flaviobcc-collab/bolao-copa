@@ -169,7 +169,34 @@ function App() {
 </aside>
     
     <main className="content">
-      <header className="topbar"><div><h1>{titleFor(view)}</h1><p>{view === "dashboard" ? "Jogos por data, ranking e estatísticas" : (profile?.nome || session.user.email)}</p></div><div className="user-pill"><span>{initials(profile?.nome || session.user.email)}</span><strong>Olá, {profile?.nome || session.user.email}</strong></div>{toast && <div className="toast">{toast}</div>}</header>
+      <header className="topbar">
+  <div>
+    <h1>{titleFor(view)}</h1>
+    <p>
+      {view === "dashboard"
+        ? "Jogos por data, ranking e estatísticas"
+        : (profile?.nome || session.user.email)}
+    </p>
+  </div>
+
+  {view === "dashboard" && (
+    <a
+      href="/landing/regras.html"
+      target="_blank"
+      rel="noreferrer"
+      className="btn-regras"
+    >
+      📘 Regras
+    </a>
+  )}
+
+  <div className="user-pill">
+    <span>{initials(profile?.nome || session.user.email)}</span>
+    <strong>Olá, {profile?.nome || session.user.email}</strong>
+  </div>
+
+  {toast && <div className="toast">{toast}</div>}
+</header>
       {view === 'dashboard' && <Dashboard user={session.user} profile={profile} show={show} goRanking={()=>setView('ranking')}/>} 
       {view === 'perfil' && <MeuPerfil user={session.user} profile={profile} setProfile={setProfile} show={show}/>} 
       {view === 'participacao' && <MinhaParticipacao user={session.user} profile={profile} setProfile={setProfile} show={show}/>} 
