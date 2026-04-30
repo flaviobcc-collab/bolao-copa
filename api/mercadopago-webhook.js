@@ -39,14 +39,25 @@ export default async function handler(req, res) {
       });
     }
 
-    const userId = payment.external_reference;
+    let userId = payment.external_reference;
 
-    if (!userId) {
-      return res.status(200).json({
-        received: true,
-        message: 'Pagamento sem external_reference.'
-      });
-    }
+if (!userId) {
+  const { data: participante, error: findError } = await supabaseAdmin
+    .from('participantes')
+    .select('id')
+    .eq('pagamento_id', String(payment.id))
+    .maybeSingle();
+
+  if (findError || !participante) {
+    return res.status(200).json({
+      received: true,
+      message: 'Pagamento sem external_reference e sem participante encontrado pelo pagamento_id.',
+      payment_id: payment.id
+    });
+  }
+
+  userId = participante.id;
+}
 
     const supabaseAdmin = createClient(
       process.env.SUPABASE_URL,
