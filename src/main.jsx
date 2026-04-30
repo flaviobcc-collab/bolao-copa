@@ -184,7 +184,7 @@ function App() {
       href="/landing/regras.html"
       target="_blank"
       rel="noreferrer"
-      className="btn-regras"
+      className="nav-rules"
     >
       📘 Regras
     </a>
