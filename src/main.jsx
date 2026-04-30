@@ -766,11 +766,13 @@ return (
       </section>)}
       {datas.length===0 && <Empty msg="Nenhum jogo encontrado para este filtro."/>}
     </div>
-    <aside className="right-column">
+       <aside className="right-column">
       <RankingWidget rows={rankingRows} goRanking={goRanking}/>
       <StatsWidget stats={myStats} position={myPosition}/>
     </aside>
+
   </div>
+);
 }
 
 function RankingWidget({rows, goRanking}){
