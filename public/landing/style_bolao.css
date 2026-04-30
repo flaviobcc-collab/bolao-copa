@@ -1,1 +1,103 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6fb;
+}
 
+/* LAYOUT */
+.rules-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.rules-sidebar {
+  width: 260px;
+  background: #111827;
+  color: white;
+  padding: 24px;
+}
+
+.rules-sidebar h2 {
+  margin: 30px 0 20px;
+}
+
+.back-link {
+  color: #d1d5db;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* MENU */
+.menu-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #d1d5db;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  text-align: left;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* CONTEÚDO */
+.rules-content {
+  flex: 1;
+  padding: 30px;
+}
+
+/* SEÇÕES */
+.rules-section {
+  display: none;
+}
+
+.active-section {
+  display: block;
+}
+
+/* HERO */
+.rules-hero {
+  margin-bottom: 30px;
+}
+
+.hero-icon {
+  font-size: 40px;
+}
+
+/* CARDS */
+.score-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.score-card.green { border-left: 6px solid #22c55e; }
+.score-card.blue { border-left: 6px solid #3b82f6; }
+.score-card.purple { border-left: 6px solid #a855f7; }
+.score-card.orange { border-left: 6px solid #f97316; }
+.score-card.yellow { border-left: 6px solid #eab308; }
+.score-card.red { border-left: 6px solid #ef4444; }
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .rules-layout {
+    flex-direction: column;
+  }
+
+  .rules-sidebar {
+    width: 100%;
+  }
+
+  .rules-content {
+    padding: 15px;
+  }
+}
