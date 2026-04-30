@@ -1,0 +1,29 @@
+PASSO A PASSO SUPABASE - v10.5 ADMIN USUÁRIOS
+
+1) Depois de subir os arquivos no GitHub e aguardar o deploy da Vercel, abra o Supabase.
+
+2) Vá em SQL Editor e rode o arquivo:
+   patch_supabase_v10_5.sql
+
+3) Garanta que seu usuário seja admin. No SQL Editor, rode trocando pelo seu e-mail:
+
+   update public.participantes
+   set perfil = 'admin', ativo = true, deleted_at = null
+   where email = 'SEU_EMAIL_AQUI';
+
+4) Teste no site:
+   Administração > Participantes
+
+5) Opcional: exclusão definitiva do Supabase Auth.
+   Para o botão Excluir remover também o usuário do Auth, publique a Edge Function:
+
+   supabase functions deploy admin-delete-user
+
+   A função está em:
+   supabase/functions/admin-delete-user/index.ts
+
+   Se você não publicar a Edge Function, o sistema ainda bloqueia/exclui logicamente o usuário,
+   impede palpites e força logout pelo status ativo/deleted_at.
+
+6) Se o usuário bloqueado ainda parecer logado, peça para atualizar a página.
+   O app verifica o status e faz logout automático.

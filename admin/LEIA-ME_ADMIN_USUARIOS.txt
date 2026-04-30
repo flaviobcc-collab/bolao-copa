@@ -1,0 +1,16 @@
+O painel de usuários da v10.5 está integrado ao app React.
+Depois de subir os arquivos e rodar o SQL, acesse:
+
+Administração > Participantes
+
+Recursos incluídos:
+- lista de usuários;
+- bloquear/desbloquear;
+- excluir usuário;
+- status ativo/inativo;
+- logout automático para usuário bloqueado/excluído;
+- bloqueio de palpites para usuário inativo.
+
+Observação:
+A exclusão definitiva do Supabase Auth depende da Edge Function em:
+supabase/functions/admin-delete-user/index.ts
