@@ -174,14 +174,137 @@ function Auth({show}) {
   const [password, setPassword] = useState('');
   const [nome, setNome] = useState('');
   const [busy, setBusy] = useState(false);
-  const submit = async (e) => {
-    e.preventDefault(); setBusy(true);
-    const res = isLogin ? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password, options: { data: { nome } } });
-    setBusy(false);
-    if (res.error) show(res.error.message); else show(isLogin ? 'Login realizado.' : 'Cadastro criado. Confira seu e-mail se a confirmação estiver ativa.');
+  const [statusMsg, setStatusMsg] = useState('');
+  const [statusType, setStatusType] = useState('');
+
+  const mensagem = (tipo, texto) => {
+    setStatusType(tipo);
+    setStatusMsg(texto);
+    setTimeout(() => {
+      setStatusMsg('');
+      setStatusType('');
+    }, 6000);
   };
-  const reset = async () => { if (!email) return show('Informe seu e-mail.'); const { error } = await supabase.auth.resetPasswordForEmail(email); show(error ? error.message : 'E-mail de recuperação enviado.'); };
-  return <div className="auth"><form onSubmit={submit} className="auth-card"><h1>Bolão da Copa 2026</h1><p>{isLogin?'Acesse sua conta':'Crie sua conta'}</p>{!isLogin && <input placeholder="Nome" value={nome} onChange={e=>setNome(e.target.value)} required/>}<input placeholder="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><input placeholder="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><button disabled={busy}>{busy?'Aguarde...':isLogin?'Entrar':'Cadastrar'}</button><button type="button" className="link" onClick={()=>setIsLogin(!isLogin)}>{isLogin?'Criar conta':'Já tenho conta'}</button><button type="button" className="link" onClick={reset}>Esqueci minha senha</button></form></div>
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setStatusMsg('');
+
+    let res;
+
+    if (isLogin) {
+      res = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+    } else {
+      res = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { nome }
+        }
+      });
+    }
+
+    setBusy(false);
+
+    if (res.error) {
+      mensagem('erro', res.error.message);
+      return;
+    }
+
+    if (isLogin) {
+      mensagem('sucesso', 'Login realizado com sucesso.');
+      setPassword('');
+    } else {
+      mensagem(
+        'sucesso',
+        'Cadastro realizado com sucesso. Verifique seu e-mail caso a confirmação esteja ativada.'
+      );
+
+      setNome('');
+      setEmail('');
+      setPassword('');
+      setIsLogin(true);
+    }
+  };
+
+  const reset = async () => {
+    if (!email) {
+      mensagem('erro', 'Informe seu e-mail para recuperar a senha.');
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+
+    if (error) {
+      mensagem('erro', error.message);
+    } else {
+      mensagem('sucesso', 'E-mail de recuperação enviado.');
+    }
+  };
+
+  return (
+    <div className="auth">
+      <form onSubmit={submit} className="auth-card">
+        <h1>Bolão da Copa 2026</h1>
+
+        <p>{isLogin ? 'Acesse sua conta' : 'Crie sua conta'}</p>
+
+        {statusMsg && (
+          <div className={`auth-status ${statusType}`}>
+            {statusMsg}
+          </div>
+        )}
+
+        {!isLogin && (
+          <input
+            placeholder="Nome"
+            value={nome}
+            onChange={e => setNome(e.target.value)}
+            required
+          />
+        )}
+
+        <input
+          placeholder="E-mail"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+
+        <input
+          placeholder="Senha"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+
+        <button disabled={busy}>
+          {busy ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
+        </button>
+
+        <button
+          type="button"
+          className="link"
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setStatusMsg('');
+          }}
+        >
+          {isLogin ? 'Criar conta' : 'Já tenho conta'}
+        </button>
+
+        <button type="button" className="link" onClick={reset}>
+          Esqueci minha senha
+        </button>
+      </form>
+    </div>
+  );
 }
 
 async function fetchJogos(show){
