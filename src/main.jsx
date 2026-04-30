@@ -674,8 +674,6 @@ function Dashboard({show, user, profile, goRanking}){
 
     </div>
   );
-  
-}
 
   useEffect(()=>{ load(); }, []);
   async function load(){
