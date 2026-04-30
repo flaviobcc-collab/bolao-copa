@@ -308,9 +308,12 @@ body{background:#f6f8f7;color:#13251c}
 }
 
 /* Ajuste card Minha Participação */
-.participacao-panel,
-.panel {
-  max-width: 900px;
+.participacao-panel {
+  max-width: 920px;
+  background: #fff;
+  border: 1px solid #dfeae4;
+  border-radius: 24px;
+  padding: 22px;
 }
 
 .participacao-grid {
