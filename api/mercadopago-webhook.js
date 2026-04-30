@@ -7,26 +7,45 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
+
     const paymentId =
       body?.data?.id ||
       req.query?.['data.id'] ||
       req.query?.id;
 
     if (!paymentId) {
-      return res.status(200).json({ received: true, message: 'Sem paymentId.' });
+      return res.status(200).json({
+        received: true,
+        message: 'Notificação recebida sem paymentId.'
+      });
     }
 
-    const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`
+    const mpResponse = await fetch(
+      `https://api.mercadopago.com/v1/payments/${paymentId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`
+        }
       }
-    });
+    );
 
     const payment = await mpResponse.json();
 
     if (!mpResponse.ok) {
-      return res.status(200).json({ received: true, error: payment });
+      return res.status(200).json({
+        received: true,
+        error: payment
+      });
+    }
+
+    const userId = payment.external_reference;
+
+    if (!userId) {
+      return res.status(200).json({
+        received: true,
+        message: 'Pagamento sem external_reference.'
+      });
     }
 
     const supabaseAdmin = createClient(
@@ -34,22 +53,42 @@ export default async function handler(req, res) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    const userId = payment.external_reference;
+    const updateData = {
+      pagamento_id: String(payment.id),
+      pagamento_valor: payment.transaction_amount
+    };
 
-    if (payment.status === 'approved' && userId) {
-      await supabaseAdmin
-        .from('participantes')
-        .update({
-          pagamento_status: 'confirmado',
-          pagamento_confirmado_em: new Date().toISOString(),
-          pagamento_id: String(payment.id),
-          pagamento_valor: payment.transaction_amount
-        })
-        .eq('id', userId);
+    if (payment.status === 'approved') {
+      updateData.pagamento_status = 'confirmado';
+      updateData.pagamento_confirmado_em = new Date().toISOString();
+    } else if (payment.status === 'pending') {
+      updateData.pagamento_status = 'pendente';
+    } else {
+      updateData.pagamento_status = payment.status || 'pendente';
     }
 
-    return res.status(200).json({ received: true });
+    const { error } = await supabaseAdmin
+      .from('participantes')
+      .update(updateData)
+      .eq('id', userId);
+
+    if (error) {
+      return res.status(200).json({
+        received: true,
+        supabase_error: error
+      });
+    }
+
+    return res.status(200).json({
+      received: true,
+      payment_id: payment.id,
+      status: payment.status,
+      user_id: userId
+    });
   } catch (error) {
-    return res.status(200).json({ received: true, error: error.message });
+    return res.status(200).json({
+      received: true,
+      error: error.message
+    });
   }
 }
