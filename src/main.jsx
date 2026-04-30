@@ -156,14 +156,6 @@ function App() {
   <NavItem icon={<Eye/>} active={view==='ver'} onClick={()=>setView('ver')}>Ver Palpites</NavItem>
   <NavItem icon={<CalendarDays/>} active={view==='calendario'} onClick={()=>setView('calendario')}>Calendário</NavItem>
   <NavItem icon={<ListChecks/>} active={view==='ranking'} onClick={()=>setView('ranking')}>Ranking</NavItem>
-   <NavItem ><a 
-  href="/landing/regras.html" 
-  target="_blank" 
-  rel="noreferrer"
-  className="nav-item"
->
-  <BookOpen size={18}/> Regras
-</a></NavItem>
 
   {isAdmin && (
     <NavItem icon={<Settings/>} active={view==='admin'} onClick={()=>setView('admin')}>
