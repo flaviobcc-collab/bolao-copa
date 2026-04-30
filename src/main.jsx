@@ -442,6 +442,12 @@ function Dashboard({show, user, profile, goRanking}){
   const [filter,setFilter]=useState('TODOS');
   const [saving,setSaving]=useState(false);
 
+  const premiacao = calcularPremiacao(
+    users.length,
+    config?.valor_participacao || 20,
+    config?.percentual_operacional || 10
+  );
+
   useEffect(()=>{ load(); }, []);
   async function load(){
     const js = await fetchJogos(show);
