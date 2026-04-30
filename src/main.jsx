@@ -674,7 +674,7 @@ function Dashboard({show, user, profile, goRanking}){
 
     </div>
   );
-  return <div className="cartola-page">
+  
 }
 
   useEffect(()=>{ load(); }, []);
