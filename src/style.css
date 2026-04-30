@@ -367,12 +367,6 @@ body{background:#f6f8f7;color:#13251c}
   gap: 16px;
 }
 
-/* MENU EM COLUNA */
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
 /* BOTÃO REGRAS */
 .nav-rules {
