@@ -452,6 +452,234 @@ function Dashboard({show, user, profile, goRanking}){
   async function load(){
     const js = await fetchJogos(show);
     setJogos(js);
+
+    const { data: cfg } = await supabase.from('configuracao_bolao').select('*').eq('id',1).maybeSingle();
+    setConfig(cfg);
+
+    const { data: meus } = await supabase.from('palpites').select('*').eq('participante_id', user.id);
+    setPalpites(Object.fromEntries((meus||[]).map(p=>[p.jogo_id,p])));
+
+    const { data: us } = await supabase.from('participantes')
+      .select('*')
+      .eq('ativo', true)
+      .is('deleted_at', null)
+      .order('nome');
+
+    setUsers(us || []);
+
+    const { data: pals } = await supabase.from('palpites').select('*');
+    setAllPalpites(pals || []);
+  }
+
+  const fechadoGlobal = (profile?.ativo === false) || (config?.limite_palpite ? new Date() > new Date(config.limite_palpite) : false);
+
+  const rankingRows = useMemo(()=>buildRanking(users, allPalpites, jogos), [users, allPalpites, jogos]);
+
+  const myStats = rankingRows.find(r => r.id === user.id) || {
+    pontos:0, naMosca:0, p3:0, p2:0, p1:0,
+    jogosDisputados:0, jogosPontuados:0, aproveitamento:0
+  };
+
+  const myPosition = Math.max(1, rankingRows.findIndex(r => r.id === user.id) + 1);
+
+  const filteredJogos = useMemo(()=>jogos.filter(j=>{
+    const status = normalizaStatus(j.status, j);
+    if(filter === 'AGUARDANDO') return status === 'AGUARDANDO';
+    if(filter === 'EM_ANDAMENTO') return status === 'EM_ANDAMENTO';
+    if(filter === 'FINALIZADO') return status === 'FINALIZADO';
+    return true;
+  }), [jogos, filter]);
+
+  const gruposPorData = useMemo(() =>
+    filteredJogos.reduce((acc,j)=>{
+      const k=dayKey(j.data_hora);
+      (acc[k] ||= []).push(j);
+      return acc;
+    },{}),
+  [filteredJogos]);
+
+  const datas = Object.keys(gruposPorData).sort();
+
+  const setVal = (jogoId, k, v) =>
+    setPalpites(p => ({
+      ...p,
+      [jogoId]: {
+        ...(p[jogoId]||{}),
+        jogo_id:jogoId,
+        participante_id:user.id,
+        [k]: v === '' ? null : Number(v)
+      }
+    }));
+
+  const saveOne = async (j) => {
+    const p = palpites[j.id];
+
+    if(jogoBloqueadoParaPalpite(j, fechadoGlobal))
+      return show('Palpite bloqueado para esta partida.');
+
+    if(!p || p.palpite_a == null || p.palpite_b == null)
+      return show('Informe os dois placares.');
+
+    const row = {
+      participante_id: user.id,
+      jogo_id: j.id,
+      palpite_a: p.palpite_a,
+      palpite_b: p.palpite_b
+    };
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from('palpites')
+      .upsert([row], { onConflict:'participante_id,jogo_id' });
+
+    setSaving(false);
+
+    show(error ? `Erro: ${error.message}` : 'Palpite salvo.');
+
+    if(!error) load();
+  };
+
+  return (
+    <div className="cartola-page">
+
+      {/* COLUNA PRINCIPAL */}
+      <div className="main-column">
+
+        <section className="page-banner">
+          <div className="banner-title">
+            <CalendarDays/>
+            <div>
+              <h2>Fase de Grupos</h2>
+              <p>Participe e mostre que você entende de futebol!</p>
+            </div>
+          </div>
+
+          <div className="deadline-box">
+            <Clock size={22}/>
+            <span>Limite dos palpites</span>
+            <strong>{fmtDate(config?.limite_palpite)} BRT</strong>
+          </div>
+        </section>
+
+        <div className="filter-tabs">
+          {[
+            ['TODOS','Todos'],
+            ['AGUARDANDO','Aguardando'],
+            ['EM_ANDAMENTO','Em andamento'],
+            ['FINALIZADO','Finalizados']
+          ].map(([id,label])=>(
+            <button key={id}
+              className={filter===id?'active':''}
+              onClick={()=>setFilter(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {datas.map(data=>(
+          <section className="date-block" key={data}>
+            <h3>
+              <CalendarDays size={17}/>
+              {fmtDay(gruposPorData[data][0]?.data_hora)}
+            </h3>
+
+            {gruposPorData[data].map(j=>{
+              const p = palpites[j.id] || {};
+              const pts = calcPoints(j,p);
+              const bloqueado = jogoBloqueadoParaPalpite(j, fechadoGlobal);
+              const info = statusInfo(j.status);
+
+              return (
+                <div className={`match-card-wide status-${info.cls}`} key={j.id}>
+                  <div className={`status-pill ${info.cls}`}>{info.label}</div>
+
+                  <div className="wide-center">
+                    <strong>
+                      {j.grupo_nome ? `Grupo ${j.grupo_nome}` : 'Grupo'} - Jogo {j.partida_numero || j.id}
+                    </strong>
+                    <span>{fmtDate(j.data_hora)} BRT</span>
+                  </div>
+
+                  <div className="wide-match">
+                    <div className="wide-team left">
+                      {j.a_bandeira && <img src={flagSrc(j.a_bandeira)} />}
+                      <strong>{j.time_a}</strong>
+                    </div>
+
+                    <div className="wide-score">
+                      <input disabled={bloqueado} type="number" value={p.palpite_a ?? ''} onChange={e=>setVal(j.id,'palpite_a',e.target.value)} />
+                      <span>x</span>
+                      <input disabled={bloqueado} type="number" value={p.palpite_b ?? ''} onChange={e=>setVal(j.id,'palpite_b',e.target.value)} />
+                    </div>
+
+                    <div className="wide-team right">
+                      {j.b_bandeira && <img src={flagSrc(j.b_bandeira)} />}
+                      <strong>{j.time_b}</strong>
+                    </div>
+                  </div>
+
+                  <div className="wide-footer">
+                    <span>📍 {[j.estadio,j.cidade].filter(Boolean).join(' · ')}</span>
+                    <span>Oficial: <b>{j.gols_a ?? '—'} x {j.gols_b ?? '—'}</b></span>
+                    <span className={pointClass(pts)}>
+                      {pts === null ? 'Aguardando' : `+${pts} pts`}
+                    </span>
+                    <button disabled={saving || bloqueado} onClick={()=>saveOne(j)}>
+                      {bloqueado ? 'Bloqueado' : 'Salvar'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </section>
+        ))}
+      </div>
+
+      {/* COLUNA DIREITA */}
+      <aside className="right-column">
+
+        {/* 💰 NOVO CARD DE PREMIAÇÃO */}
+        <section className="side-card">
+          <div className="side-title">
+            <span>💰 Premiação estimada</span>
+          </div>
+
+          <div className="stat-row">
+            <span>Total arrecadado</span>
+            <strong>R$ {premiacao.total.toFixed(2)}</strong>
+          </div>
+
+          <div className="stat-row">
+            <span>Taxa operacional</span>
+            <strong>R$ {premiacao.taxaValor.toFixed(2)}</strong>
+          </div>
+
+          <div className="stat-row">
+            <span>Valor líquido</span>
+            <strong>R$ {premiacao.liquido.toFixed(2)}</strong>
+          </div>
+
+          <hr/>
+
+          <div className="stat-row"><span>🥇 1º lugar</span><strong>R$ {premiacao.primeiro.toFixed(2)}</strong></div>
+          <div className="stat-row"><span>🥈 2º lugar</span><strong>R$ {premiacao.segundo.toFixed(2)}</strong></div>
+          <div className="stat-row"><span>🥉 3º lugar</span><strong>R$ {premiacao.terceiro.toFixed(2)}</strong></div>
+        </section>
+
+        <RankingWidget rows={rankingRows} goRanking={goRanking}/>
+        <StatsWidget stats={myStats} position={myPosition}/>
+      </aside>
+
+    </div>
+  );
+}
+
+  useEffect(()=>{ load(); }, []);
+  async function load(){
+    const js = await fetchJogos(show);
+    setJogos(js);
     const { data: cfg } = await supabase.from('configuracao_bolao').select('*').eq('id',1).maybeSingle(); setConfig(cfg);
     const { data: meus, error: eMeus } = await supabase.from('palpites').select('*').eq('participante_id', user.id);
     if(eMeus) show(eMeus.message); else setPalpites(Object.fromEntries((meus||[]).map(p=>[p.jogo_id,p])));
