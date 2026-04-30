@@ -415,34 +415,32 @@ function MinhaParticipacao({user, profile, setProfile, show}) {
         </button>
       </div>
 
-     {status !== 'confirmado' && qrBase64 && (
-        <div className="pix-area">
-          <h3>Escaneie o QR Code Pix</h3>
+    {profile?.pagamento_status !== 'confirmado' && qrBase64 && (
+  <div className="pix-area">
+    <h3>Escaneie o QR Code Pix</h3>
 
-          <img
-            src={`data:image/png;base64,${qrBase64}`}
-            alt="QR Code Pix"
-          />
+    <img
+      src={`data:image/png;base64,${qrBase64}`}
+      alt="QR Code Pix"
+    />
 
-          <h3>Pix copia e cola</h3>
+    <h3>Pix copia e cola</h3>
 
-          <textarea
-            readOnly
-            value={copiaCola || ''}
-          />
+    <textarea
+      readOnly
+      value={copiaCola || ''}
+    />
 
-          <div className="toolbar">
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(copiaCola || '');
-                show('Código Pix copiado.');
-              }}
-            >
-              Copiar código Pix
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="toolbar">
+      <button onClick={() => {
+        navigator.clipboard.writeText(copiaCola || '');
+        show('Código Pix copiado.');
+      }}>
+        Copiar código Pix
+      </button>
+    </div>
+  </div>
+)}
     </section>
   );
 }
