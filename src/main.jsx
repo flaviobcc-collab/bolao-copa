@@ -674,6 +674,7 @@ function Dashboard({show, user, profile, goRanking}){
 
     </div>
   );
+  return <div className="cartola-page">
 }
 
   useEffect(()=>{ load(); }, []);
@@ -722,7 +723,6 @@ function Dashboard({show, user, profile, goRanking}){
     if(!error) load();
   };
 
-  return <div className="cartola-page">
     <div className="main-column">
       <section className="page-banner">
         <div className="banner-title"><CalendarDays/><div><h2>Fase de Grupos</h2><p>Participe e mostre que você entende de futebol!</p></div></div>
