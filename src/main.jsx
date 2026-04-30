@@ -144,18 +144,36 @@ function App() {
 
   return <div className="app">
     <aside className="sidebar">
-      <div className="brand"><Trophy/> <span>Bolão da Copa 2026</span></div>
-      <span>
-      <NavItem icon={<Gauge/>} active={view==='dashboard'} onClick={()=>setView('dashboard')}>Dashboard</NavItem>
-      <NavItem icon={<UserRound/>} active={view==='perfil'} onClick={()=>setView('perfil')}>Meu Perfil</NavItem>
-      <NavItem icon={<Trophy/>} active={view==='participacao'} onClick={()=>setView('participacao')}>Minha Participação</NavItem>
-      <NavItem icon={<Vote/>} active={view==='meus'} onClick={()=>setView('meus')}>Meus Palpites</NavItem>
-      <NavItem icon={<Eye/>} active={view==='ver'} onClick={()=>setView('ver')}>Ver Palpites</NavItem>
-      <NavItem icon={<CalendarDays/>} active={view==='calendario'} onClick={()=>setView('calendario')}>Calendário</NavItem>
-      <NavItem icon={<ListChecks/>} active={view==='ranking'} onClick={()=>setView('ranking')}>Ranking</NavItem>
-      {isAdmin && <NavItem icon={<Settings/>} active={view==='admin'} onClick={()=>setView('admin')}>Administração</NavItem>}
-      <button className="logout" onClick={()=>supabase.auth.signOut()}><LogOut size={18}/> Sair</button></span>
-    </aside>
+  <div className="brand">
+    <Trophy/>
+    <span>Bolão da Copa 2026</span>
+  </div>
+
+  <nav className="nav-menu">
+    <NavItem icon={<Gauge/>} active={view==='dashboard'} onClick={()=>setView('dashboard')}>Dashboard</NavItem>
+    <NavItem icon={<UserRound/>} active={view==='perfil'} onClick={()=>setView('perfil')}>Meu Perfil</NavItem>
+    <NavItem icon={<Trophy/>} active={view==='participacao'} onClick={()=>setView('participacao')}>Minha Participação</NavItem>
+    <NavItem icon={<Vote/>} active={view==='meus'} onClick={()=>setView('meus')}>Meus Palpites</NavItem>
+    <NavItem icon={<Eye/>} active={view==='ver'} onClick={()=>setView('ver')}>Ver Palpites</NavItem>
+    <NavItem icon={<CalendarDays/>} active={view==='calendario'} onClick={()=>setView('calendario')}>Calendário</NavItem>
+    <NavItem icon={<ListChecks/>} active={view==='ranking'} onClick={()=>setView('ranking')}>Ranking</NavItem>
+
+    {isAdmin && (
+      <NavItem icon={<Settings/>} active={view==='admin'} onClick={()=>setView('admin')}>
+        Administração
+      </NavItem>
+    )}
+
+    {/* NOVO BOTÃO REGRAS */}
+    <a href="/landing/regras.html" target="_blank" className="nav-rules">
+      📘 Regras
+    </a>
+  </nav>
+
+  <button className="logout" onClick={()=>supabase.auth.signOut()}>
+    <LogOut size={18}/> Sair
+  </button>
+</aside>
     <main className="content">
       <header className="topbar"><div><h1>{titleFor(view)}</h1><p>{view === "dashboard" ? "Jogos por data, ranking e estatísticas" : (profile?.nome || session.user.email)}</p></div><div className="user-pill"><span>{initials(profile?.nome || session.user.email)}</span><strong>Olá, {profile?.nome || session.user.email}</strong></div>{toast && <div className="toast">{toast}</div>}</header>
       {view === 'dashboard' && <Dashboard user={session.user} profile={profile} show={show} goRanking={()=>setView('ranking')}/>} 
