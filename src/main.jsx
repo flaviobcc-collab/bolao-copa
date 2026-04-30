@@ -644,3 +644,17 @@ function AdminParticipantes({show}){
   </div>
 }
 createRoot(document.getElementById('root')).render(<App />);
+function calcularPremiacao(totalParticipantes, valor, taxa) {
+  const total = totalParticipantes * valor;
+  const taxaValor = total * (taxa / 100);
+  const liquido = total - taxaValor;
+
+  return {
+    total,
+    taxaValor,
+    liquido,
+    primeiro: liquido * 0.60,
+    segundo: liquido * 0.25,
+    terceiro: liquido * 0.15
+  };
+}
