@@ -738,7 +738,10 @@ function Dashboard({show, user, profile, goRanking}){
     setSaving(false);
     show(error ? `Erro ao salvar: ${error.message}` : 'Palpite salvo.');
     if(!error) load();
-  };
+ };
+
+return (
+  <div className="cartola-page">
 
     <div className="main-column">
       <section className="page-banner">
