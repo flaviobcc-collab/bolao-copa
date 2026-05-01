@@ -63,6 +63,13 @@ function pointReason(jogo, palpite) {
   return 'Sem pontuação';
 }
 
+function podePalpitar(usuario) {
+  if (usuario.palpites_override === 'liberado') return true
+  if (usuario.palpites_override === 'bloqueado') return false
+
+  return usuario.pagamento_status === 'confirmado'
+}
+
 function medal(i) {
   if (i === 0) return '🥇';
   if (i === 1) return '🥈';
