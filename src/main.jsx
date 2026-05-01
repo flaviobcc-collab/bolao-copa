@@ -861,7 +861,13 @@ function statusLabel(r){
 function AdminParticipantes({show}){
   const [rows,setRows]=useState([]);
   const [busy,setBusy]=useState('');
-  const load=()=>supabase.from('participantes').select('*').order('created_at', { ascending:false }).then(({data,error})=>error?show(error.message):setRows(data||[]));
+
+  const load=()=>supabase
+    .from('participantes')
+    .select('*')
+    .order('created_at', { ascending:false })
+    .then(({data,error})=>error?show(error.message):setRows(data||[]));
+
   useEffect(load,[]);
 
   async function role(id,perfil){
@@ -870,35 +876,177 @@ function AdminParticipantes({show}){
     load();
   }
 
+  async function alterarOverride(id, valor){
+    const { error } = await supabase
+      .from('participantes')
+      .update({ palpites_override: valor })
+      .eq('id', id);
+
+    if(error){
+      show(error.message);
+      return;
+    }
+
+    show('Permissão de palpites atualizada.');
+    load();
+  }
+
   async function toggleAtivo(r){
     const current = (await supabase.auth.getUser()).data?.user?.id;
     if(r.perfil === 'admin' && r.id === current) return show('Você não pode bloquear seu próprio usuário admin.');
+
     const novo = r.ativo === false;
-    const {error}=await supabase.from('participantes').update({ativo:novo, blocked_at: novo ? null : new Date().toISOString()}).eq('id',r.id);
+
+    const {error}=await supabase
+      .from('participantes')
+      .update({ativo:novo, blocked_at: novo ? null : new Date().toISOString()})
+      .eq('id',r.id);
+
     show(error?error.message:(novo?'Usuário desbloqueado.':'Usuário bloqueado.'));
     load();
   }
 
   async function excluirUsuario(r){
     const current = (await supabase.auth.getUser()).data?.user?.id;
+
     if(r.id === current) return show('Você não pode excluir seu próprio usuário logado.');
+
     if(!confirm(`Excluir ${r.nome || r.email}?\n\nIsso remove/bloqueia o usuário e tenta apagar também no Supabase Auth.`)) return;
+
     setBusy(r.id);
-    const { data, error } = await supabase.functions.invoke('admin-delete-user', { body: { user_id: r.id } });
+
+    const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+      body: { user_id: r.id }
+    });
+
     if(error){
       show('Não consegui excluir no Auth. Verifique se a Edge Function admin-delete-user foi publicada. Marquei como excluído no cadastro.');
-      await supabase.from('participantes').update({ativo:false, deleted_at:new Date().toISOString(), blocked_at:new Date().toISOString()}).eq('id',r.id);
+
+      await supabase
+        .from('participantes')
+        .update({
+          ativo:false,
+          deleted_at:new Date().toISOString(),
+          blocked_at:new Date().toISOString()
+        })
+        .eq('id',r.id);
     } else {
       show(data?.message || 'Usuário excluído.');
     }
+
     setBusy('');
     load();
   }
 
-  return <div className="panel user-admin-panel">
-    <div className="panel-head"><div><h3>Usuários do bolão</h3><p>Bloqueie, desbloqueie ou exclua participantes. Usuários inativos não conseguem palpitar e são deslogados automaticamente.</p></div><button onClick={load}>Atualizar</button></div>
-    <div className="table-wrap"><table className="users-table"><thead><tr><th>Usuário</th><th>Telefone</th><th>Status</th><th>Perfil</th><th>Cadastro</th><th>Ações</th></tr></thead><tbody>{rows.map(r=>{ const st=statusLabel(r); return <tr key={r.id} className={r.ativo===false || r.deleted_at ? 'muted-row' : ''}><td><div className="user-cell"><span className="mini-avatar">{initials(r.nome || r.email)}</span><div><strong>{r.nome || 'Sem nome'}</strong><small>{r.email}</small></div></div></td><td>{r.telefone || '—'}</td><td><span className={`user-status ${st.cls}`}>{st.label}</span></td><td><span className="role-chip">{r.perfil || 'participante'}</span></td><td>{r.created_at ? fmtDate(r.created_at) : '—'}</td><td className="actions user-actions"><button onClick={()=>role(r.id,r.perfil==='admin'?'participante':'admin')}>{r.perfil==='admin'?'Tornar participante':'Tornar admin'}</button><button className={r.ativo===false?'':'secondary'} onClick={()=>toggleAtivo(r)}>{r.ativo===false?<><Unlock size={15}/> Desbloquear</>:<><Ban size={15}/> Bloquear</>}</button><button className="danger" disabled={busy===r.id || r.deleted_at} onClick={()=>excluirUsuario(r)}>{busy===r.id?'Excluindo...':<><Trash2 size={15}/> Excluir</>}</button></td></tr>})}</tbody></table></div>
-  </div>
+  return (
+    <div className="panel user-admin-panel">
+      <div className="panel-head">
+        <div>
+          <h3>Usuários do bolão</h3>
+          <p>
+            Bloqueie, desbloqueie, exclua participantes e controle a permissão manual de palpites.
+          </p>
+        </div>
+
+        <button onClick={load}>Atualizar</button>
+      </div>
+
+      <div className="table-wrap">
+        <table className="users-table">
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Telefone</th>
+              <th>Status</th>
+              <th>Pagamento</th>
+              <th>Palpites</th>
+              <th>Perfil</th>
+              <th>Cadastro</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {rows.map(r=>{
+              const st = statusLabel(r);
+              const liberado = podePalpitar(r);
+
+              return (
+                <tr key={r.id} className={r.ativo===false || r.deleted_at ? 'muted-row' : ''}>
+                  <td>
+                    <div className="user-cell">
+                      <span className="mini-avatar">{initials(r.nome || r.email)}</span>
+                      <div>
+                        <strong>{r.nome || 'Sem nome'}</strong>
+                        <small>{r.email}</small>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>{r.telefone || '—'}</td>
+
+                  <td>
+                    <span className={`user-status ${st.cls}`}>{st.label}</span>
+                  </td>
+
+                  <td>
+                    {r.pagamento_status === 'confirmado'
+                      ? <span className="user-status active">Pago</span>
+                      : <span className="user-status blocked">Pendente</span>
+                    }
+                  </td>
+
+                  <td>
+                    <div style={{display:'flex', flexDirection:'column', gap:'6px'}}>
+                      <span className={`user-status ${liberado ? 'active' : 'blocked'}`}>
+                        {liberado ? 'Liberado' : 'Bloqueado'}
+                      </span>
+
+                      <select
+                        value={r.palpites_override || 'auto'}
+                        onChange={(e) => alterarOverride(r.id, e.target.value)}
+                      >
+                        <option value="auto">Auto</option>
+                        <option value="liberado">Liberar</option>
+                        <option value="bloqueado">Bloquear</option>
+                      </select>
+                    </div>
+                  </td>
+
+                  <td>
+                    <span className="role-chip">{r.perfil || 'participante'}</span>
+                  </td>
+
+                  <td>{r.created_at ? fmtDate(r.created_at) : '—'}</td>
+
+                  <td className="actions user-actions">
+                    <button onClick={()=>role(r.id,r.perfil==='admin'?'participante':'admin')}>
+                      {r.perfil==='admin'?'Tornar participante':'Tornar admin'}
+                    </button>
+
+                    <button className={r.ativo===false?'':'secondary'} onClick={()=>toggleAtivo(r)}>
+                      {r.ativo===false
+                        ? <><Unlock size={15}/> Desbloquear</>
+                        : <><Ban size={15}/> Bloquear</>
+                      }
+                    </button>
+
+                    <button
+                      className="danger"
+                      disabled={busy===r.id || r.deleted_at}
+                      onClick={()=>excluirUsuario(r)}
+                    >
+                      {busy===r.id?'Excluindo...':<><Trash2 size={15}/> Excluir</>}
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 async function gerarPixPagamento(profile) {
