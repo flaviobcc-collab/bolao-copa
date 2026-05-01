@@ -662,7 +662,11 @@ function Dashboard({show, user, profile, goRanking}){
     setAllPalpites(pals || []);
   }
 
-  const fechadoGlobal = (profile?.ativo === false) || (config?.limite_palpite ? new Date() > new Date(config.limite_palpite) : false);
+  const liberadoParaPalpitar = podePalpitar(profile);
+  const fechadoGlobal =
+  (profile?.ativo === false) ||
+  !liberadoParaPalpitar ||
+  (config?.limite_palpite ? new Date() > new Date(config.limite_palpite) : false);
   const rankingRows = useMemo(()=>buildRanking(users, allPalpites, jogos), [users, allPalpites, jogos]);
   const myStats = rankingRows.find(r => r.id === user.id) || {pontos:0, naMosca:0, p3:0, p2:0, p1:0, jogosDisputados:0, jogosPontuados:0, aproveitamento:0};
   const myPosition = Math.max(1, rankingRows.findIndex(r => r.id === user.id) + 1);
