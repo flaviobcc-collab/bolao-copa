@@ -231,8 +231,18 @@ function Auth({show}) {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [busy, setBusy] = useState(false);
+  const [config,setConfig] = useState(null);
   const [statusMsg, setStatusMsg] = useState('');
   const [statusType, setStatusType] = useState('');
+
+  useEffect(()=>{
+  supabase
+    .from('configuracao_bolao')
+    .select('*')
+    .eq('id',1)
+    .maybeSingle()
+    .then(({data})=>setConfig(data));
+},[]);
 
   const mensagem = (tipo, texto) => {
     setStatusType(tipo);
