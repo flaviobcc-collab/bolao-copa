@@ -946,17 +946,20 @@ function AdminParticipantes({show}){
 
   return (
     <div className="panel user-admin-panel">
-      <div className="panel-head">
-        <div>
-          <h3>Usuários do bolão</h3>
-          <p>
-            Bloqueie, desbloqueie, exclua participantes e controle a permissão manual de palpites.
-          </p>
-        </div>
+     <div className="panel-head">
+  <div>
+    <h3>Usuários do bolão</h3>
+    <p>
+      Bloqueie, desbloqueie, exclua participantes e controle a permissão manual de palpites.
+    </p>
+  </div>
 
-        <button onClick={load}>Atualizar</button>
-      </div>
-
+  <div className="toolbar">
+    <button onClick={load}>Atualizar</button>
+    <button onClick={() => alterarTodosOverride('liberado')}>Liberar todos</button>
+    <button className="secondary" onClick={() => alterarTodosOverride('auto')}>Voltar todos para Auto</button>
+  </div>
+</div>
       <div className="table-wrap">
         <table className="users-table">
           <thead>
