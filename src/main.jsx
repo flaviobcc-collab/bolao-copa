@@ -867,6 +867,7 @@ function statusLabel(r){
 function AdminParticipantes({show}){
   const [rows,setRows]=useState([]);
   const [busy,setBusy]=useState('');
+  const [filtro,setFiltro] = useState('TODOS');
 
   const load=()=>supabase
     .from('participantes')
@@ -968,6 +969,25 @@ function AdminParticipantes({show}){
     <button className="secondary" onClick={() => alterarTodosOverride('auto')}>Voltar todos para Auto</button>
   </div>
 </div>
+<div className="filter-tabs">
+  {[
+    ['TODOS','Todos'],
+    ['PAGO','Pagos'],
+    ['PENDENTE','Pendentes'],
+    ['LIBERADO','Liberados'],
+    ['BLOQUEADO','Bloqueados'],
+    ['AUTO','Automático']
+  ].map(([id,label])=>(
+    <button
+      key={id}
+      className={filtro===id?'active':''}
+      onClick={()=>setFiltro(id)}
+    >
+      {label}
+    </button>
+  ))}
+</div>
+      
       <div className="table-wrap">
         <table className="users-table">
           <thead>
