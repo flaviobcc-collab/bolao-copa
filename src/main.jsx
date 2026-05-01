@@ -832,22 +832,22 @@ function AdminConfig({show}){
     limite_cadastro:'2026-06-03T23:59'
   });
 
-  useEffect(()=>{
-    supabase
-      .from('configuracao_bolao')
-      .select('*')
-      .eq('id',1)
-      .maybeSingle()
-      .then(({data})=>{
-        if(data){
-          setCfg({
-            ...data,
-            limite_palpite: data.limite_palpite?.slice(0,16) || '',
-            limite_cadastro: data.limite_cadastro?.slice(0,16) || ''
-          });
-        }
-      });
-  },[]);
+ useEffect(()=>{
+  supabase
+    .from('configuracao_bolao')
+    .select('*')
+    .eq('id',1)
+    .maybeSingle()
+    .then(({data})=>{
+      if(data){
+        setCfg({
+          ...data,
+          limite_palpite: toInputDateTime(data.limite_palpite),
+          limite_cadastro: toInputDateTime(data.limite_cadastro)
+        });
+      }
+    });
+},[]);
 
   async function save(){
     const {error}=await supabase
