@@ -855,8 +855,8 @@ function AdminConfig({show}){
       .upsert({
         ...cfg,
         id:1,
-        limite_palpite: cfg.limite_palpite ? new Date(cfg.limite_palpite).toISOString() : null,
-        limite_cadastro: cfg.limite_cadastro ? new Date(cfg.limite_cadastro).toISOString() : null
+        limite_palpite: cfg.limite_palpite || null
+        limite_cadastro: cfg.limite_cadastro || null
       });
 
     show(error?error.message:'Configuração salva.');
