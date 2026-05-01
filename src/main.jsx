@@ -64,10 +64,12 @@ function pointReason(jogo, palpite) {
 }
 
 function podePalpitar(usuario) {
-  if (usuario.palpites_override === 'liberado') return true
-  if (usuario.palpites_override === 'bloqueado') return false
+  if (!usuario) return false;
 
-  return usuario.pagamento_status === 'confirmado'
+  if (usuario.palpites_override === 'liberado') return true;
+  if (usuario.palpites_override === 'bloqueado') return false;
+
+  return usuario.pagamento_status === 'confirmado';
 }
 
 function medal(i) {
