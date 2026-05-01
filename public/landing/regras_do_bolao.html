@@ -2,9 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Regras | Bolão Esportivo</title>
-  <link rel="stylesheet" href="style_bolao.css"/>
+
+  <link rel="stylesheet" href="style_bolao.css" />
+  <link rel="stylesheet" href="landing.css" />
 </head>
 
 <body>
@@ -27,393 +29,347 @@
 
     <!-- CONTEÚDO -->
     <main class="rules-content">
-<link rel="stylesheet" href="landing.css"/>
-      <!-- PONTUAÇÃO (DEFAULT) -->
-       <main class="rules-page">
-    <a class="back-link" href="/landing/">← Voltar</a>
 
-    <section class="rules-hero">
-      <div>
-        <div class="hero-icon">🏆</div>
-        <h1>Regras de Pontuação</h1>
-        <p>Faça seus palpites e marque pontos conforme a proximidade do resultado real dos jogos.</p>
-      </div>
+      <!-- PONTUAÇÃO -->
+      <section id="pontuacao" class="rules-section active-section">
+        <section class="rules-page">
 
-      <div class="how-card">
-        <h2>📋 Como funciona</h2>
-        <p>Você informa seu palpite antes do jogo. Após o resultado, sua pontuação é calculada automaticamente.</p>
-      </div>
-    </section>
+          <section class="rules-hero">
+            <div>
+              <div class="hero-icon">🏆</div>
+              <h1>Regras de Pontuação</h1>
+              <p>Faça seus palpites e marque pontos conforme a proximidade do resultado real dos jogos.</p>
+            </div>
 
-    <section class="score-card green">
-      <div class="score-label">
-        <div class="score-icon">🎯</div>
-        <h2>5 pontos</h2>
-        <strong>Na mosca</strong>
-      </div>
+            <div class="how-card">
+              <h2>📋 Como funciona</h2>
+              <p>Você informa seu palpite antes do jogo. Após o resultado, sua pontuação é calculada automaticamente.</p>
+            </div>
+          </section>
 
-      <div class="examples">
-        <h3>Você acertou o resultado do jogo!</h3>
+          <section class="score-card green">
+            <div class="score-label">
+              <div class="score-icon">🎯</div>
+              <h2>5 pontos</h2>
+              <strong>Na mosca</strong>
+            </div>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Brasil 2 x 1 Argentina</div>
-            <p>Palpite: 2 x 1</p>
-            <p>Resultado: 2 x 1</p>
-            <b>✅ 5 pontos</b>
-          </div>
+            <div class="examples">
+              <h3>Você acertou o resultado do jogo!</h3>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">França 0 x 0 Alemanha</div>
-            <p>Palpite: 0 x 0</p>
-            <p>Resultado: 0 x 0</p>
-            <b>✅ 5 pontos</b>
-          </div>
-        </div>
-      </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Brasil 2 x 1 Argentina</div>
+                  <p>Palpite: 2 x 1</p>
+                  <p>Resultado: 2 x 1</p>
+                  <b>✅ 5 pontos</b>
+                </div>
 
-      <div class="explain">
-        Você acertou exatamente o placar da partida, por isso marcou 5 pontos.
-      </div>
-    </section>
+                <div class="example">
+                  <span>Exemplo 2</span>
+                  <div class="score">França 0 x 0 Alemanha</div>
+                  <p>Palpite: 0 x 0</p>
+                  <p>Resultado: 0 x 0</p>
+                  <b>✅ 5 pontos</b>
+                </div>
+              </div>
+            </div>
 
-    <section class="score-card blue">
-      <div class="score-label">
-        <div class="score-icon">⭐</div>
-        <h2>3 pontos</h2>
-        <strong>Gols do vencedor</strong>
-      </div>
+            <div class="explain">
+              Você acertou exatamente o placar da partida, por isso marcou 5 pontos.
+            </div>
+          </section>
 
-      <div class="examples">
-        <h3>Você acertou o placar do vencedor!</h3>
+          <section class="score-card blue">
+            <div class="score-label">
+              <div class="score-icon">⭐</div>
+              <h2>3 pontos</h2>
+              <strong>Gols do vencedor</strong>
+            </div>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Brasil 3 x 0 Japão</div>
-            <p>Palpite: 3 x 1</p>
-            <p>Resultado: 3 x 0</p>
-            <b>✅ 3 pontos</b>
-          </div>
+            <div class="examples">
+              <h3>Você acertou o placar do vencedor!</h3>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">Inglaterra 2 x 0 Senegal</div>
-            <p>Palpite: 2 x 1</p>
-            <p>Resultado: 2 x 0</p>
-            <b>✅ 3 pontos</b>
-          </div>
-        </div>
-      </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Brasil 3 x 0 Japão</div>
+                  <p>Palpite: 3 x 1</p>
+                  <p>Resultado: 3 x 0</p>
+                  <b>✅ 3 pontos</b>
+                </div>
 
-      <div class="explain">
-        Você conseguiu acertar a quantidade de gols do time vencedor, mesmo errando o outro placar.
-      </div>
-    </section>
+                <div class="example">
+                  <span>Exemplo 2</span>
+                  <div class="score">Inglaterra 2 x 0 Senegal</div>
+                  <p>Palpite: 2 x 1</p>
+                  <p>Resultado: 2 x 0</p>
+                  <b>✅ 3 pontos</b>
+                </div>
+              </div>
+            </div>
 
-    <section class="score-card purple">
-      <div class="score-label">
-        <div class="score-icon">🤝</div>
-        <h2>3 pontos</h2>
-        <strong>Indicação de empate</strong>
-      </div>
+            <div class="explain">
+              Você conseguiu acertar a quantidade de gols do time vencedor, mesmo errando o outro placar.
+            </div>
+          </section>
 
-      <div class="examples">
-        <h3>Você indicou empate e o jogo terminou empatado!</h3>
+          <section class="score-card purple">
+            <div class="score-label">
+              <div class="score-icon">🤝</div>
+              <h2>3 pontos</h2>
+              <strong>Indicação de empate</strong>
+            </div>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Croácia 2 x 2 Marrocos</div>
-            <p>Palpite: 1 x 1</p>
-            <p>Resultado: 2 x 2</p>
-            <b>✅ 3 pontos</b>
-          </div>
+            <div class="examples">
+              <h3>Você indicou empate e o jogo terminou empatado!</h3>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">Portugal 1 x 1 Uruguai</div>
-            <p>Palpite: 0 x 0</p>
-            <p>Resultado: 1 x 1</p>
-            <b>✅ 3 pontos</b>
-          </div>
-        </div>
-      </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Croácia 2 x 2 Marrocos</div>
+                  <p>Palpite: 1 x 1</p>
+                  <p>Resultado: 2 x 2</p>
+                  <b>✅ 3 pontos</b>
+                </div>
 
-      <div class="explain">
-        Você indicou corretamente que o jogo terminaria empatado. Se acertar o placar exato, será 5 pontos.
-      </div>
-    </section>
+                <div class="example">
+                  <span>Exemplo 2</span>
+                  <div class="score">Portugal 1 x 1 Uruguai</div>
+                  <p>Palpite: 0 x 0</p>
+                  <p>Resultado: 1 x 1</p>
+                  <b>✅ 3 pontos</b>
+                </div>
+              </div>
+            </div>
 
-    <section class="score-card orange">
-      <div class="score-label">
-        <div class="score-icon">🥈</div>
-        <h2>2 pontos</h2>
-        <strong>Gols do perdedor</strong>
-      </div>
+            <div class="explain">
+              Você indicou corretamente que o jogo terminaria empatado. Se acertar o placar exato, será 5 pontos.
+            </div>
+          </section>
 
-      <div class="examples">
-        <h3>Você acertou os gols do perdedor!</h3>
+          <section class="score-card orange">
+            <div class="score-label">
+              <div class="score-icon">🥈</div>
+              <h2>2 pontos</h2>
+              <strong>Gols do perdedor</strong>
+            </div>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Brasil 2 x 1 Japão</div>
-            <p>Palpite: 4 x 1</p>
-            <p>Resultado: 2 x 1</p>
-            <b>✅ 2 pontos</b>
-          </div>
+            <div class="examples">
+              <h3>Você acertou os gols do perdedor!</h3>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">França 3 x 1 Polônia</div>
-            <p>Palpite: 3 x 1</p>
-            <p>Resultado: 3 x 1</p>
-            <b>✅ 5 pontos</b>
-          </div>
-        </div>
-      </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Brasil 2 x 1 Japão</div>
+                  <p>Palpite: 4 x 1</p>
+                  <p>Resultado: 2 x 1</p>
+                  <b>✅ 2 pontos</b>
+                </div>
+              </div>
+            </div>
 
-      <div class="explain">
-        Você não acertou o placar correto, mas acertou a quantidade de gols do time perdedor.
-      </div>
-    </section>
+            <div class="explain">
+              Você não acertou o placar correto, mas acertou a quantidade de gols do time perdedor.
+            </div>
+          </section>
 
-    <section class="score-card yellow">
-      <div class="score-label">
-        <div class="score-icon">✅</div>
-        <h2>1 ponto</h2>
-        <strong>Indicação do vencedor</strong>
-      </div>
+          <section class="score-card yellow">
+            <div class="score-label">
+              <div class="score-icon">✅</div>
+              <h2>1 ponto</h2>
+              <strong>Indicação do vencedor</strong>
+            </div>
 
-      <div class="examples">
-        <h3>Você indicou o vencedor!</h3>
+            <div class="examples">
+              <h3>Você indicou o vencedor!</h3>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Brasil 1 x 0 Japão</div>
-            <p>Palpite: 2 x 0</p>
-            <p>Resultado: 1 x 0</p>
-            <b>✅ 1 ponto</b>
-          </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Brasil 1 x 0 Japão</div>
+                  <p>Palpite: 2 x 0</p>
+                  <p>Resultado: 1 x 0</p>
+                  <b>✅ 1 ponto</b>
+                </div>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">Argentina 2 x 1 Arábia Saudita</div>
-            <p>Palpite: 3 x 0</p>
-            <p>Resultado: 2 x 1</p>
-            <b>✅ 1 ponto</b>
-          </div>
-        </div>
-      </div>
+                <div class="example">
+                  <span>Exemplo 2</span>
+                  <div class="score">Argentina 2 x 1 Arábia Saudita</div>
+                  <p>Palpite: 3 x 0</p>
+                  <p>Resultado: 2 x 1</p>
+                  <b>✅ 1 ponto</b>
+                </div>
+              </div>
+            </div>
 
-      <div class="explain">
-        Você não acertou o placar correto, mas ao menos indicou qual time venceria.
-      </div>
-    </section>
+            <div class="explain">
+              Você não acertou o placar correto, mas ao menos indicou qual time venceria.
+            </div>
+          </section>
 
-    <section class="score-card red">
-      <div class="score-label">
-        <div class="score-icon">❌</div>
-        <h2>0 ponto</h2>
-        <strong>Resultado incorreto</strong>
-      </div>
+          <section class="score-card red">
+            <div class="score-label">
+              <div class="score-icon">❌</div>
+              <h2>0 ponto</h2>
+              <strong>Resultado incorreto</strong>
+            </div>
 
-      <div class="examples">
-        <h3>Você errou o resultado base do jogo!</h3>
+            <div class="examples">
+              <h3>Você errou o resultado base do jogo!</h3>
 
-        <div class="example-grid">
-          <div class="example">
-            <span>Exemplo 1</span>
-            <div class="score">Brasil 1 x 2 Japão</div>
-            <p>Palpite: 2 x 1</p>
-            <p>Resultado: 1 x 2</p>
-            <b>❌ 0 ponto</b>
-          </div>
+              <div class="example-grid">
+                <div class="example">
+                  <span>Exemplo 1</span>
+                  <div class="score">Brasil 1 x 2 Japão</div>
+                  <p>Palpite: 2 x 1</p>
+                  <p>Resultado: 1 x 2</p>
+                  <b>❌ 0 ponto</b>
+                </div>
 
-          <div class="example">
-            <span>Exemplo 2</span>
-            <div class="score">Alemanha 2 x 1 Costa Rica</div>
-            <p>Palpite: 1 x 0</p>
-            <p>Resultado: 1 x 2</p>
-            <b>❌ 0 ponto</b>
-          </div>
-        </div>
-      </div>
+                <div class="example">
+                  <span>Exemplo 2</span>
+                  <div class="score">Alemanha 2 x 1 Costa Rica</div>
+                  <p>Palpite: 1 x 0</p>
+                  <p>Resultado: 1 x 2</p>
+                  <b>❌ 0 ponto</b>
+                </div>
+              </div>
+            </div>
 
-      <div class="explain">
-        Você errou o vencedor ou indicou empate quando houve vencedor. Por isso, não marcou pontos.
-      </div>
-    </section>
+            <div class="explain">
+              Você errou o vencedor ou indicou empate quando houve vencedor. Por isso, não marcou pontos.
+            </div>
+          </section>
 
-    <section class="rules-footer">
-      <div>
-        <h2>⚖️ Critérios de desempate</h2>
-        <ol>
-          <li>Maior pontuação total</li>
-          <li>Maior número de acertos “Na mosca”</li>
-          <li>Maior número de acertos de 3 pontos</li>
-          <li>Maior número de acertos de 2 pontos</li>
-          <li>Maior número de acertos de 1 ponto</li>
-        </ol>
-      </div>
+          <section class="rules-footer">
+            <div>
+              <h2>⚖️ Critérios de desempate</h2>
+              <ol>
+                <li>Maior pontuação total</li>
+                <li>Maior número de acertos “Na mosca”</li>
+                <li>Maior número de acertos de 3 pontos</li>
+                <li>Maior número de acertos de 2 pontos</li>
+                <li>Maior número de acertos de 1 ponto</li>
+              </ol>
+            </div>
+          </section>
 
-      <div>
-        <h2>🏆 Premiação</h2>
-        <p>A premiação será distribuída conforme o regulamento do bolão e os critérios informados no termo de participação.</p>
-      </div>
-    </section>
-  </main>
-  <div>
-    <h2>🏆 Premiação</h2>
-    <p>A premiação será distribuída conforme o regulamento do bolão e os critérios informados no termo de participação.</p>
-  </div>
-</section>
-        <!-- COLE AQUI EXATAMENTE O BLOCO QUE VOCÊ ME ENVIOU -->
-        <!-- (cards de pontuação completos) -->
-
+        </section>
       </section>
 
       <!-- PREMIAÇÃO -->
-<section id="premiacao" class="rules-section">
+      <section id="premiacao" class="rules-section">
+        <section class="rules-page">
 
-  <section class="rules-hero">
-    <div>
-      <div class="hero-icon">💰</div>
-      <h1>Regras de Premiação</h1>
-      <p>A premiação será definida conforme a classificação final dos participantes no ranking geral do bolão.</p>
-    </div>
+          <section class="rules-hero">
+            <div>
+              <div class="hero-icon">💰</div>
+              <h1>Regras de Premiação</h1>
+              <p>A premiação será definida conforme a classificação final dos participantes no ranking geral do bolão.</p>
+            </div>
 
-    <div class="how-card">
-      <h2>🏆 Como funciona</h2>
-      <p>Ao final da competição, os participantes mais bem colocados receberão a premiação conforme as regras estabelecidas pelo organizador.</p>
-    </div>
-  </section>
+            <div class="how-card">
+              <h2>🏆 Como funciona</h2>
+              <p>Ao final da competição, os participantes mais bem colocados receberão a premiação conforme as regras estabelecidas pelo organizador.</p>
+            </div>
+          </section>
 
-  <section class="score-card green">
-    <div class="score-label">
-      <div class="score-icon">🥇</div>
-      <h2>1º lugar</h2>
-      <strong>Campeão geral</strong>
-    </div>
+          <section class="score-card green">
+            <div class="score-label">
+              <div class="score-icon">🥇</div>
+              <h2>1º lugar</h2>
+              <strong>Campeão geral</strong>
+            </div>
 
-    <div class="examples">
-      <h3>Maior pontuação total</h3>
-      <p>O participante que terminar em primeiro lugar no ranking geral será considerado o campeão do bolão.</p>
-   </div>
+            <div class="examples">
+              <h3>Maior pontuação total</h3>
+              <p>O participante que terminar em primeiro lugar no ranking geral será considerado o campeão do bolão.</p>
+            </div>
 
-    <div class="explain">
-      Em caso de empate, serão aplicados os critérios de desempate definidos nas regras de pontuação.
-    </div>
-  </section>
+            <div class="explain">
+              Em caso de empate, serão aplicados os critérios de desempate definidos nas regras de pontuação.
+            </div>
+          </section>
 
-  <section class="score-card blue">
-    <div class="score-label">
-      <div class="score-icon">🥈</div>
-      <h2>2º lugar</h2>
-      <strong>Vice-campeão</strong>
-    </div>
+          <section class="score-card blue">
+            <div class="score-label">
+              <div class="score-icon">🥈</div>
+              <h2>2º lugar</h2>
+              <strong>Vice-campeão</strong>
+            </div>
 
-    <div class="examples">
-      <h3>Segunda maior pontuação</h3>
-      <p>O participante que terminar na segunda posição do ranking poderá receber premiação, caso previsto no regulamento do bolão.</p>
-    </div>
+            <div class="examples">
+              <h3>Segunda maior pontuação</h3>
+              <p>O participante que terminar na segunda posição do ranking poderá receber premiação, caso previsto no regulamento do bolão.</p>
+            </div>
 
-    <div class="explain">
-      A existência de premiação para o 2º lugar dependerá do modelo definido pelo organizador.
-    </div>
-  </section>
+            <div class="explain">
+              A existência de premiação para o 2º lugar dependerá do modelo definido pelo organizador.
+            </div>
+          </section>
 
-  <section class="score-card purple">
-    <div class="score-label">
-      <div class="score-icon">🥉</div>
-      <h2>3º lugar</h2>
-      <strong>Terceiro colocado</strong>
-    </div>
+          <section class="score-card purple">
+            <div class="score-label">
+              <div class="score-icon">🥉</div>
+              <h2>3º lugar</h2>
+              <strong>Terceiro colocado</strong>
+            </div>
 
-    <div class="examples">
-      <h3>Terceira maior pontuação</h3>
-      <p>O participante que terminar na terceira posição poderá ser premiado, conforme a divisão definida antes do início do bolão.</p>
-    </div>
+            <div class="examples">
+              <h3>Terceira maior pontuação</h3>
+              <p>O participante que terminar na terceira posição poderá ser premiado, conforme a divisão definida antes do início do bolão.</p>
+            </div>
 
-    <div class="explain">
-      A premiação do 3º lugar é opcional e deve estar informada previamente aos participantes.
-    </div>
-  </section>
+            <div class="explain">
+              A premiação do 3º lugar é opcional e deve estar informada previamente aos participantes.
+            </div>
+          </section>
 
-  <section class="score-card orange">
-    <div class="score-label">
-      <div class="score-icon">⚖️</div>
-      <h2>Empates</h2>
-      <strong>Critérios de desempate</strong>
-    </div>
+          <section class="score-card orange">
+            <div class="score-label">
+              <div class="score-icon">⚖️</div>
+              <h2>Empates</h2>
+              <strong>Critérios de desempate</strong>
+            </div>
 
-    <div class="examples">
-      <h3>Quando dois ou mais participantes empatam</h3>
-      <p>Será usada a ordem de desempate prevista nas regras de pontuação.</p>
-      <p><h3>Exemplos:</h3>
-<li>Exemplo 1: Empate em 1º lugar entre 2 participantes:
-Os percentuais de 1º (60%) e 2º (25%) são somados (85%) e divididos igualmente entre os dois participantes.</li>
-        
-<li>Exemplo 2: Empate em 1º lugar entre 3 ou mais participantes:
-Os percentuais de 1º (60%), 2º (25%) e 3º (15%) são somados (100%) e divididos igualmente entre os três participantes.</li>
+            <div class="examples">
+              <h3>Quando dois ou mais participantes empatam</h3>
+              <p>Será usada a ordem de desempate prevista nas regras de pontuação.</p>
 
-<li>Exemplo 3: Empate em 2º lugar entre 2 participantes.
-Os percentuais de 2º (25%) e 3º (15%) são somados (40%) e divididos igualmente entre os dois participantes.</li>
+              <ul>
+                <li><strong>Empate em 1º lugar entre 2 participantes:</strong> os percentuais de 1º e 2º lugares são somados e divididos igualmente.</li>
+                <li><strong>Empate em 1º lugar entre 3 ou mais participantes:</strong> os percentuais de 1º, 2º e 3º lugares são somados e divididos igualmente.</li>
+                <li><strong>Empate em 2º lugar entre 2 participantes:</strong> os percentuais de 2º e 3º lugares são somados e divididos igualmente.</li>
+                <li><strong>Empate em 3º lugar:</strong> o percentual destinado ao 3º lugar será dividido igualmente entre os empatados.</li>
+                <li><strong>Empate geral:</strong> o valor total da premiação será dividido igualmente entre todos os participantes empatados.</li>
+              </ul>
+            </div>
 
-<li>Exemplo 4: Empate em 3º lugar entre 2 ou mais participantes.
+            <div class="explain">
+              Persistindo o empate após todos os critérios, a premiação poderá ser dividida igualmente entre os participantes empatados.
+            </div>
+          </section>
 
-Os percentual do 3º (15%) será dividido igualmente entre os participantes empatados.</li>
+          <section class="score-card yellow">
+            <div class="score-label">
+              <div class="score-icon">📢</div>
+              <h2>Divulgação</h2>
+              <strong>Transparência</strong>
+            </div>
 
-<li>Exemplo 3: Empate geral entre todos os participantes.
-O valor total destinado à premiação será dividido igualmente entre todos os participantes empatados.</li>
-      </p>
-    </div>
+            <div class="examples">
+              <h3>Premiação informada previamente</h3>
+              <p>O valor da premiação e a forma de distribuição deverão ser comunicados aos participantes antes do início do bolão.</p>
+            </div>
 
-    <div class="explain">
-      Persistindo o empate após todos os critérios, a premiação poderá ser dividida igualmente entre os participantes empatados.
-    </div>
-  </section>
+            <div class="explain">
+              O organizador poderá atualizar informações administrativas, desde que não altere injustamente a regra de classificação.
+            </div>
+          </section>
 
-  <section class="score-card yellow">
-    <div class="score-label">
-      <div class="score-icon">📢</div>
-      <h3>Divulgação</h3>
-      <strong>Transparência</strong>
-    </div>
-
-    <div class="examples">
-      <h3>Premiação informada previamente</h3>
-      <p>O valor da premiação e a forma de distribuição deverão ser comunicados aos participantes antes do início do bolão.</p>
-    </div>
-
-    <div class="explain">
-      O organizador poderá atualizar informações administrativas, desde que não altere injustamente a regra de classificação.
-    </div>
-  </section>
-
-</section>
-
-        <section class="score-card blue">
-          <div class="score-label">
-            <div class="score-icon">🏅</div>
-            <h2>Demais posições</h2>
-            <strong>Distribuição definida pelo organizador</strong>
-          </div>
-
-          <div class="examples">
-            <h3>Premiação do bolão</h3>
-            <p>A divisão pode considerar Top 3 ou outro formato definido antes do início.</p>
-          </div>
-
-          <div class="explain">
-            Todos os critérios devem estar claros antes do primeiro jogo.
-          </div>
         </section>
-
       </section>
 
     </main>
@@ -421,11 +377,14 @@ O valor total destinado à premiação será dividido igualmente entre todos os 
 
   <script>
     function mostrarSecao(secao, botao) {
-      document.querySelectorAll('.rules-section').forEach(section => {
+      const secoes = document.querySelectorAll('.rules-section');
+      const botoes = document.querySelectorAll('.menu-item');
+
+      secoes.forEach(section => {
         section.classList.remove('active-section');
       });
 
-      document.querySelectorAll('.menu-item').forEach(item => {
+      botoes.forEach(item => {
         item.classList.remove('active');
       });
 
@@ -433,6 +392,5 @@ O valor total destinado à premiação será dividido igualmente entre todos os 
       botao.classList.add('active');
     }
   </script>
-
 </body>
 </html>
