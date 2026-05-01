@@ -855,7 +855,7 @@ function AdminConfig({show}){
       .upsert({
         ...cfg,
         id:1,
-        limite_palpite: cfg.limite_palpite || null
+        limite_palpite: cfg.limite_palpite || null,
         limite_cadastro: cfg.limite_cadastro || null
       });
 
