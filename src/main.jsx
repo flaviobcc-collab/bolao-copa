@@ -1004,7 +1004,16 @@ function AdminParticipantes({show}){
           </thead>
 
           <tbody>
-            {rows.map(r=>{
+            {rows
+  .filter(r=>{
+    if(filtro==='PAGO') return r.pagamento_status === 'confirmado';
+    if(filtro==='PENDENTE') return r.pagamento_status !== 'confirmado';
+    if(filtro==='LIBERADO') return podePalpitar(r);
+    if(filtro==='BLOQUEADO') return !podePalpitar(r);
+    if(filtro==='AUTO') return !r.palpites_override || r.palpites_override === 'auto';
+    return true;
+  })
+  .map(r=>{
               const st = statusLabel(r);
               const liberado = podePalpitar(r);
 
