@@ -501,11 +501,11 @@ function MeusPalpites({user, profile, show}){
     const { data, error } = await supabase.from('palpites').select('*').eq('participante_id', user.id);
     if (error) show(`Erro ao carregar palpites: ${error.message}`); else setPalpites(Object.fromEntries((data||[]).map(p=>[p.jogo_id,p])));
   }
-  const pagamentoConfirmado = profile?.pagamento_status === 'confirmado';
-
+  const liberadoParaPalpitar = podePalpitar(profile);
+  
 const fechadoGlobal =
   (profile?.ativo === false) ||
-  !pagamentoConfirmado ||
+  !liberadoParaPalpitar ||
   (config?.limite_palpite ? new Date() > new Date(config.limite_palpite) : false);
   const setVal = (jogoId, k, v) => setPalpites(p => ({...p, [jogoId]: {...(p[jogoId]||{}), jogo_id:jogoId, participante_id:user.id, [k]: v === '' ? null : Number(v)}}));
   const saveAll = async () => {
