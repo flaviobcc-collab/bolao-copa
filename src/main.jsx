@@ -253,12 +253,15 @@ function Auth({show}) {
     const emailLimpo = email.trim().toLowerCase();
 
 if (!isLogin) {
-  const dataLimiteCadastro = new Date('2026-06-03T23:59:59-03:00');
+  const dataLimiteCadastro = config?.limite_cadastro
+    ? new Date(config.limite_cadastro)
+    : new Date('2026-06-03T23:59:59-03:00');
+
   const agora = new Date();
 
   if (agora > dataLimiteCadastro) {
     setBusy(false);
-    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado em 03/06/2026.');
+    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
     return;
   }
 }
