@@ -882,20 +882,28 @@ function AdminParticipantes({show}){
     load();
   }
 
-  async function alterarOverride(id, valor){
-    const { error } = await supabase
-      .from('participantes')
-      .update({ palpites_override: valor })
-      .eq('id', id);
+ async function alterarTodosOverride(valor){
+  const confirmar = confirm(
+    valor === 'liberado'
+      ? 'Liberar palpites para todos os participantes?'
+      : 'Voltar todos para o modo automático?'
+  );
 
-    if(error){
-      show(error.message);
-      return;
-    }
+  if(!confirmar) return;
 
-    show('Permissão de palpites atualizada.');
-    load();
+  const { error } = await supabase
+    .from('participantes')
+    .update({ palpites_override: valor })
+    .is('deleted_at', null);
+
+  if(error){
+    show(error.message);
+    return;
   }
+
+  show('Permissões atualizadas em massa.');
+  load();
+}
 
   async function toggleAtivo(r){
     const current = (await supabase.auth.getUser()).data?.user?.id;
