@@ -59,7 +59,7 @@ body {
   display: none;
 }
 
-.active-section {
+.rules-section.active-section {
   display: block;
 }
 
