@@ -809,7 +809,93 @@ function Admin({show}){
   const [tab,setTab]=useState('config');
   return <section><div className="admin-tabs"><button className={tab==='config'?'active':''} onClick={()=>setTab('config')}>Configuração</button><button className={tab==='selecoes'?'active':''} onClick={()=>setTab('selecoes')}>Seleções</button><button className={tab==='grupos'?'active':''} onClick={()=>setTab('grupos')}>Grupos</button><button className={tab==='jogos'?'active':''} onClick={()=>setTab('jogos')}>Jogos</button><button className={tab==='participantes'?'active':''} onClick={()=>setTab('participantes')}>Participantes</button></div>{tab==='config'&&<AdminConfig show={show}/>} {tab==='selecoes'&&<AdminSelecoes show={show}/>} {tab==='grupos'&&<AdminGrupos show={show}/>} {tab==='jogos'&&<AdminJogos show={show}/>} {tab==='participantes'&&<AdminParticipantes show={show}/>}</section>
 }
-function AdminConfig({show}){ const [cfg,setCfg]=useState({nome:'Copa 2026', total_selecoes:48,total_grupos:12,selecoes_por_grupo:4,limite_palpite:'2026-06-01T23:59'}); useEffect(()=>{supabase.from('configuracao_bolao').select('*').eq('id',1).maybeSingle().then(({data})=>data&&setCfg({...data, limite_palpite:data.limite_palpite?.slice(0,16)}))},[]); async function save(){ const {error}=await supabase.from('configuracao_bolao').upsert({...cfg,id:1,limite_palpite:new Date(cfg.limite_palpite).toISOString()}); show(error?error.message:'Configuração salva.'); } return <div className="panel form-grid"><input value={cfg.nome||''} onChange={e=>setCfg({...cfg,nome:e.target.value})} placeholder="Nome"/><input type="number" value={cfg.total_selecoes||0} onChange={e=>setCfg({...cfg,total_selecoes:+e.target.value})}/><input type="number" value={cfg.total_grupos||0} onChange={e=>setCfg({...cfg,total_grupos:+e.target.value})}/><input type="number" value={cfg.selecoes_por_grupo||0} onChange={e=>setCfg({...cfg,selecoes_por_grupo:+e.target.value})}/><input type="datetime-local" value={cfg.limite_palpite||''} onChange={e=>setCfg({...cfg,limite_palpite:e.target.value})}/><button onClick={save}>Salvar configuração</button></div> }
+function AdminConfig({show}){
+  const [cfg,setCfg]=useState({
+    nome:'Copa 2026',
+    total_selecoes:48,
+    total_grupos:12,
+    selecoes_por_grupo:4,
+    limite_palpite:'2026-06-08T23:59',
+    limite_cadastro:'2026-06-03T23:59'
+  });
+
+  useEffect(()=>{
+    supabase
+      .from('configuracao_bolao')
+      .select('*')
+      .eq('id',1)
+      .maybeSingle()
+      .then(({data})=>{
+        if(data){
+          setCfg({
+            ...data,
+            limite_palpite: data.limite_palpite?.slice(0,16) || '',
+            limite_cadastro: data.limite_cadastro?.slice(0,16) || ''
+          });
+        }
+      });
+  },[]);
+
+  async function save(){
+    const {error}=await supabase
+      .from('configuracao_bolao')
+      .upsert({
+        ...cfg,
+        id:1,
+        limite_palpite: cfg.limite_palpite ? new Date(cfg.limite_palpite).toISOString() : null,
+        limite_cadastro: cfg.limite_cadastro ? new Date(cfg.limite_cadastro).toISOString() : null
+      });
+
+    show(error?error.message:'Configuração salva.');
+  }
+
+  return (
+    <div className="panel form-grid">
+      <input
+        value={cfg.nome||''}
+        onChange={e=>setCfg({...cfg,nome:e.target.value})}
+        placeholder="Nome"
+      />
+
+      <input
+        type="number"
+        value={cfg.total_selecoes||0}
+        onChange={e=>setCfg({...cfg,total_selecoes:+e.target.value})}
+        placeholder="Total de seleções"
+      />
+
+      <input
+        type="number"
+        value={cfg.total_grupos||0}
+        onChange={e=>setCfg({...cfg,total_grupos:+e.target.value})}
+        placeholder="Total de grupos"
+      />
+
+      <input
+        type="number"
+        value={cfg.selecoes_por_grupo||0}
+        onChange={e=>setCfg({...cfg,selecoes_por_grupo:+e.target.value})}
+        placeholder="Seleções por grupo"
+      />
+
+      <label>Limite de palpites</label>
+      <input
+        type="datetime-local"
+        value={cfg.limite_palpite||''}
+        onChange={e=>setCfg({...cfg,limite_palpite:e.target.value})}
+      />
+
+      <label>Limite de cadastro</label>
+      <input
+        type="datetime-local"
+        value={cfg.limite_cadastro||''}
+        onChange={e=>setCfg({...cfg,limite_cadastro:e.target.value})}
+      />
+
+      <button onClick={save}>Salvar configuração</button>
+    </div>
+  );
+}
 function AdminSelecoes({show}){ const [rows,setRows]=useState([]), [form,setForm]=useState({nome:'',codigo_bandeira:''}); const load=()=>supabase.from('selecoes').select('*').order('nome').then(({data,error})=>error?show(error.message):setRows(data||[])); useEffect(load,[]); async function add(){ const {error}=await supabase.from('selecoes').insert(form); show(error?error.message:'Seleção salva.'); setForm({nome:'',codigo_bandeira:''}); load(); } async function del(id){ if(!confirm('Excluir seleção?'))return; const {error}=await supabase.from('selecoes').delete().eq('id',id); show(error?error.message:'Excluída.'); load(); } return <div><div className="panel form-grid"><input placeholder="Nome" value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})}/><input placeholder="Código bandeira (br, ar...)" value={form.codigo_bandeira} onChange={e=>setForm({...form,codigo_bandeira:e.target.value})}/><button onClick={add}>Adicionar seleção</button></div><div className="panel"><table><tbody>{rows.map(r=><tr key={r.id}><td>{r.codigo_bandeira&&<img className="flag" src={flagSrc(r.codigo_bandeira)}/>}</td><td>{r.nome}</td><td>{r.codigo_bandeira}</td><td><button className="danger" onClick={()=>del(r.id)}>Excluir</button></td></tr>)}</tbody></table></div></div> }
 function AdminGrupos({show}){ const [grupos,setGrupos]=useState([]), [sel,setSel]=useState([]); const load=async()=>{ const {data:g,error}=await supabase.from('grupos').select('*, grupo_selecoes(selecao_id, selecoes(*))').order('ordem'); if(error) show(error.message); else setGrupos(g||[]); const {data:s}=await supabase.from('selecoes').select('*').order('nome'); setSel(s||[]); }; useEffect(()=>{load()},[]); async function gerar(){ const letters='ABCDEFGHIJKL'.split('').map((l,i)=>({nome:l,ordem:i+1})); const {error}=await supabase.from('grupos').upsert(letters,{onConflict:'nome'}); show(error?error.message:'Grupos gerados.'); load(); } async function add(grupo_id,selecao_id){ if(!selecao_id)return; const {error}=await supabase.from('grupo_selecoes').insert({grupo_id,selecao_id}); show(error?error.message:'Seleção adicionada.'); load(); } return <div><div className="toolbar"><button onClick={gerar}>Gerar grupos A-L</button></div>{grupos.map(g=><div className="panel" key={g.id}><h3>Grupo {g.nome}</h3><div className="chips">{g.grupo_selecoes?.map(gs=><span className="chip" key={gs.selecao_id}>{gs.selecoes?.nome}</span>)}</div><select onChange={e=>add(g.id,e.target.value)} defaultValue=""><option value="">Adicionar seleção...</option>{sel.map(s=><option value={s.id} key={s.id}>{s.nome}</option>)}</select></div>)}</div> }
 function toInputDateTime(value){
