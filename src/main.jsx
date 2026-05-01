@@ -252,6 +252,17 @@ function Auth({show}) {
     const telefoneLimpo = telefone.trim();
     const emailLimpo = email.trim().toLowerCase();
 
+if (!isLogin) {
+  const dataLimiteCadastro = new Date('2026-06-03T23:59:59-03:00');
+  const agora = new Date();
+
+  if (agora > dataLimiteCadastro) {
+    setBusy(false);
+    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado em 03/06/2026.');
+    return;
+  }
+}
+    
     if (!isLogin && telefoneLimpo.length < 10) {
       setBusy(false);
       mensagem('erro', 'Informe um telefone/WhatsApp válido. Exemplo: +55 21 98199-1848');
