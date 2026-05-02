@@ -244,12 +244,35 @@ function Auth({ show }) {
     }, 7000);
   };
 
-  const cadastroEstaEncerrado = () => {
-    const limite = config?.limite_cadastro
-      ? new Date(config.limite_cadastro)
-      : new Date('2026-05-01T23:59:59-03:00');
+  const obterLimiteCadastro = () => {
+    if (!config?.limite_cadastro) {
+      return new Date('2026-05-01T23:59:59-03:00');
+    }
 
-    return new Date() > limite;
+    const limite = new Date(config.limite_cadastro);
+
+    // Se a data vier sem horário útil, garante o fim do dia
+    if (
+      limite.getHours() === 0 &&
+      limite.getMinutes() === 0 &&
+      limite.getSeconds() === 0
+    ) {
+      limite.setHours(23, 59, 59, 999);
+    }
+
+    return limite;
+  };
+
+  const cadastroEstaEncerrado = () => {
+    const limite = obterLimiteCadastro();
+    const agora = new Date();
+
+    console.log('LIMITE BANCO:', config?.limite_cadastro);
+    console.log('LIMITE CONVERTIDO:', limite);
+    console.log('AGORA:', agora);
+    console.log('BLOQUEADO?', agora > limite);
+
+    return agora > limite;
   };
 
   useEffect(() => {
@@ -284,6 +307,11 @@ function Auth({ show }) {
 
   const abrirTelaCadastro = () => {
     setStatusMsg('');
+
+    if (!config) {
+      mensagem('erro', 'Configuração do bolão ainda não carregada. Tente novamente.');
+      return;
+    }
 
     if (cadastroEstaEncerrado()) {
       mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
