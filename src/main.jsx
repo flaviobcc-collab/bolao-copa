@@ -599,28 +599,63 @@ function Calendario({show}){
 
 function buildRanking(users, pals, jogos){
   const byGame = Object.fromEntries((jogos || []).map(j => [j.id, j]));
-  return (users || []).filter(u => u.ativo !== false && !u.deleted_at).map(u => {
-    const ps = (pals || []).filter(p => p.participante_id === u.id);
-    const scored = ps.map(p => calcPoints(byGame[p.jogo_id], p)).filter(v => v !== null);
-    const pontos = scored.reduce((s, v) => s + (v || 0), 0);
-    const naMosca = scored.filter(v => v === 5).length;
-    const p3 = scored.filter(v => v === 3).length;
-    const p2 = scored.filter(v => v === 2).length;
-    const p1 = scored.filter(v => v === 1).length;
-    const jogosPontuados = scored.filter(v => v > 0).length;
-    const jogosDisputados = scored.length;
-    const aproveitamento = jogosDisputados ? Math.round((pontos / (jogosDisputados * 5)) * 1000) / 10 : 0;
-    return {...u, pontos, naMosca, p3, p2, p1, jogosPontuados, jogosDisputados, aproveitamento};
-  }).sort((a,b) =>
-    b.pontos - a.pontos ||
-    b.naMosca - a.naMosca ||
-    b.p3 - a.p3 ||
-    b.p2 - a.p2 ||
-    b.p1 - a.p1 ||
-    (a.nome || a.email || '').localeCompare(b.nome || b.email || '')
-  );
-}
 
+  const rows = (users || [])
+    .filter(u => u.ativo !== false && !u.deleted_at)
+    .map(u => {
+      const ps = (pals || []).filter(p => p.participante_id === u.id);
+      const scored = ps.map(p => calcPoints(byGame[p.jogo_id], p)).filter(v => v !== null);
+
+      const pontos = scored.reduce((s, v) => s + (v || 0), 0);
+      const naMosca = scored.filter(v => v === 5).length;
+      const p3 = scored.filter(v => v === 3).length;
+      const p2 = scored.filter(v => v === 2).length;
+      const p1 = scored.filter(v => v === 1).length;
+      const jogosPontuados = scored.filter(v => v > 0).length;
+      const jogosDisputados = scored.length;
+      const aproveitamento = jogosDisputados
+        ? Math.round((pontos / (jogosDisputados * 5)) * 1000) / 10
+        : 0;
+
+      return {
+        ...u,
+        pontos,
+        naMosca,
+        p3,
+        p2,
+        p1,
+        jogosPontuados,
+        jogosDisputados,
+        aproveitamento
+      };
+    })
+    .sort((a,b) =>
+      b.pontos - a.pontos ||
+      b.naMosca - a.naMosca ||
+      b.p3 - a.p3 ||
+      b.p2 - a.p2 ||
+      b.p1 - a.p1 ||
+      (a.nome || a.email || '').localeCompare(b.nome || b.email || '')
+    );
+
+  return rows.map((r, i, arr) => {
+    if (i === 0) return { ...r, classificacao: 1 };
+
+    const anterior = arr[i - 1];
+
+    const empatado =
+      r.pontos === anterior.pontos &&
+      r.naMosca === anterior.naMosca &&
+      r.p3 === anterior.p3 &&
+      r.p2 === anterior.p2 &&
+      r.p1 === anterior.p1;
+
+    return {
+      ...r,
+      classificacao: empatado ? anterior.classificacao : i + 1
+    };
+  });
+}
 function initials(nameOrEmail){
   const base = (nameOrEmail || 'U').trim();
   const parts = base.replace(/@.*/, '').split(/\s+/).filter(Boolean);
