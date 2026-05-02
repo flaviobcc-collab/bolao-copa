@@ -244,6 +244,24 @@ function Auth({show}) {
     .then(({data})=>setConfig(data));
 },[]);
 
+// 👇 ADICIONE AQUI
+useEffect(() => {
+  if (!config) return;
+
+  const dataLimiteCadastro = config?.limite_cadastro
+    ? new Date(config.limite_cadastro)
+    : new Date('2026-06-03T23:59:59-03:00');
+
+  if (abrirCadastro) {
+    if (new Date() > dataLimiteCadastro) {
+      mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }
+}, [config, abrirCadastro]);
+
   const mensagem = (tipo, texto) => {
     setStatusType(tipo);
     setStatusMsg(texto);
