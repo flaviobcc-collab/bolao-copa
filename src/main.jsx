@@ -912,9 +912,47 @@ function Dashboard({show, user, profile, goRanking}){
 }
 
 function RankingWidget({rows, goRanking}){
-  const top = rows.slice(0,3);
-  const others = rows.slice(3,8);
-  return <section className="side-card ranking-widget"><div className="side-title"><span>🏆 Ranking Geral</span><button onClick={goRanking}>Ver todos <ChevronRight size={15}/></button></div><div className="podium">{top.map((r,i)=><div className={`podium-item p${i+1}`} key={r.id}><div className="medal-badge">{i+1}</div><div className="avatar">{initials(r.nome || r.email)}</div><strong>{r.nome || r.email}</strong><span>{r.pontos} pts</span></div>)}</div><div className="ranking-mini">{others.map((r,i)=><div key={r.id}><span>{i+4}</span><strong>{r.nome || r.email}</strong><b>{r.pontos} pts</b></div>)}</div></section>
+  const top = rows.filter(r => r.classificacao <= 3);
+  const others = rows.filter(r => r.classificacao > 3).slice(0,5);
+
+  const posicaoVisual = (classificacao) => {
+    if (classificacao === 1) return '🥇';
+    if (classificacao === 2) return '🥈';
+    if (classificacao === 3) return '🥉';
+    return `${classificacao}º`;
+  };
+
+  return (
+    <section className="side-card ranking-widget">
+      <div className="side-title">
+        <span>🏆 Ranking Geral</span>
+        <button onClick={goRanking}>
+          Ver todos <ChevronRight size={15}/>
+        </button>
+      </div>
+
+      <div className="podium">
+        {top.map((r)=>(
+          <div className={`podium-item p${r.classificacao}`} key={r.id}>
+            <div className="medal-badge">{posicaoVisual(r.classificacao)}</div>
+            <div className="avatar">{initials(r.nome || r.email)}</div>
+            <strong>{r.nome || r.email}</strong>
+            <span>{r.pontos} pts</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="ranking-mini">
+        {others.map((r)=>(
+          <div key={r.id}>
+            <span>{r.classificacao}º</span>
+            <strong>{r.nome || r.email}</strong>
+            <b>{r.pontos} pts</b>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
 function StatsWidget({stats, position}){
   return <section className="side-card stats-widget"><div className="side-title"><span><BarChart3 size={18}/> Minhas Estatísticas</span></div><div className="stat-row"><span>Pontuação Geral</span><strong>{stats.pontos} pts</strong></div><div className="stat-row"><span>Posição</span><strong>{position}º lugar</strong></div><div className="stat-row"><span>Jogos apurados</span><strong>{stats.jogosDisputados}</strong></div><div className="stat-row"><span>Aproveitamento</span><strong>{stats.aproveitamento}%</strong></div><h4>Desempate (critérios)</h4><div className="tie-grid"><div className="tie exact"><span>Na mosca<br/><small>5 pts</small></span><strong>{stats.naMosca}</strong></div><div className="tie three"><span>3 pontos</span><strong>{stats.p3}</strong></div><div className="tie two"><span>2 pontos</span><strong>{stats.p2}</strong></div><div className="tie one"><span>1 ponto</span><strong>{stats.p1}</strong></div></div><div className="score-help">Critério: maior pontuação, depois mais Na mosca, 3 pts, 2 pts e 1 pt.</div></section>
