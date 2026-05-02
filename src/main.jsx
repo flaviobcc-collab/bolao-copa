@@ -244,7 +244,16 @@ function Auth({show}) {
     .then(({data})=>setConfig(data));
 },[]);
 
-// 👇 ADICIONE AQUI
+const mensagem = (tipo, texto) => {
+  setStatusType(tipo);
+  setStatusMsg(texto);
+  setTimeout(() => {
+    setStatusMsg('');
+    setStatusType('');
+  }, 7000);
+};
+
+  {/* 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER */}
 useEffect(() => {
   if (!config) return;
 
@@ -261,15 +270,6 @@ useEffect(() => {
     }
   }
 }, [config, abrirCadastro]);
-
-  const mensagem = (tipo, texto) => {
-    setStatusType(tipo);
-    setStatusMsg(texto);
-    setTimeout(() => {
-      setStatusMsg('');
-      setStatusType('');
-    }, 7000);
-  };
 
   const submit = async (e) => {
     e.preventDefault();
