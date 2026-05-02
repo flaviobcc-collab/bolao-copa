@@ -191,11 +191,10 @@ body{background:#f6f8f7;color:#13251c}
 
 .cartola-page {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 20px;
   align-items: start;
 }
-
 .main-column {
   min-width: 0;
 }
