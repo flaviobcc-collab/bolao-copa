@@ -663,14 +663,55 @@ function initials(nameOrEmail){
 }
 
 function Ranking({show}){
-  const [rows,setRows]=useState([]); useEffect(()=>{load()},[]);
+  const [rows,setRows]=useState([]);
+
+  useEffect(()=>{load()},[]);
+
   async function load(){
     const jogos = await fetchJogos(show);
-    const {data: users}=await supabase.from('participantes').select('*').eq('ativo', true).is('deleted_at', null);
-    const {data: pals,error}=await supabase.from('palpites').select('*'); if(error) return show(error.message);
+
+    const {data: users}=await supabase
+      .from('participantes')
+      .select('*')
+      .eq('ativo', true)
+      .is('deleted_at', null);
+
+    const {data: pals,error}=await supabase.from('palpites').select('*');
+
+    if(error) return show(error.message);
+
     setRows(buildRanking(users || [], pals || [], jogos));
   }
-  return <div className="ranking-list enhanced-ranking">{rows.map((r,i)=><div className={`ranking-card ${i===0?'leader':''}`} key={r.id}><div className="ranking-pos">{medal(i)}</div><div className="ranking-name"><strong>{r.nome || r.email}</strong><span>Na mosca: {r.naMosca} · 3 pts: {r.p3} · 2 pts: {r.p2} · 1 pt: {r.p1}</span></div><div className="ranking-score">{r.pontos}<small>pts</small></div></div>)}</div>
+
+  return (
+    <div className="ranking-list enhanced-ranking">
+      {rows.map((r)=>(
+        <div
+          className={`ranking-card ${r.classificacao===1?'leader':''}`}
+          key={r.id}
+        >
+          <div className="ranking-pos">
+            {r.classificacao === 1 ? '🥇' :
+             r.classificacao === 2 ? '🥈' :
+             r.classificacao === 3 ? '🥉' :
+             `${r.classificacao}º`}
+          </div>
+
+          <div className="ranking-name">
+            <strong>{r.nome || r.email}</strong>
+            <span>
+              Na mosca: {r.naMosca} · 3 pts: {r.p3} · 2 pts: {r.p2} · 1 pt: {r.p1}
+            </span>
+          </div>
+
+          <div className="ranking-score">
+            {r.pontos}
+            <small>pts</small>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function Dashboard({show, user, profile, goRanking}){
