@@ -906,7 +906,6 @@ function Dashboard({show, user, profile, goRanking}){
 </section>
 
       <RankingWidget rows={rankingRows} goRanking={goRanking}/>
-      <StatsWidget stats={myStats} position={myPosition}/>
     </aside>
   </div>
 }
