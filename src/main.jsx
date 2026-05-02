@@ -221,7 +221,7 @@ function App() {
 function titleFor(v){ return ({dashboard:'Dashboard', perfil:'Meu Perfil', participacao:'Minha Participação', meus:'Meus Palpites', ver:'Ver Palpites', calendario:'Calendário de Jogos', ranking:'Ranking', admin:'Administração'})[v] || 'Bolão'; }
 function NavItem({children, icon, active, onClick}){ return <button className={`nav ${active?'active':''}`} onClick={onClick}>{icon}{children}</button> }
 
-function Auth({show}) {
+function Auth({ show }) {
   const params = new URLSearchParams(window.location.search);
   const abrirCadastro = params.get('cadastro') === '1';
 
@@ -231,45 +231,68 @@ function Auth({show}) {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [busy, setBusy] = useState(false);
-  const [config,setConfig] = useState(null);
+  const [config, setConfig] = useState(null);
   const [statusMsg, setStatusMsg] = useState('');
   const [statusType, setStatusType] = useState('');
 
-  useEffect(()=>{
-  supabase
-    .from('configuracao_bolao')
-    .select('*')
-    .eq('id',1)
-    .maybeSingle()
-    .then(({data})=>setConfig(data));
-},[]);
+  const mensagem = (tipo, texto) => {
+    setStatusType(tipo);
+    setStatusMsg(texto);
+    setTimeout(() => {
+      setStatusMsg('');
+      setStatusType('');
+    }, 7000);
+  };
 
-const mensagem = (tipo, texto) => {
-  setStatusType(tipo);
-  setStatusMsg(texto);
-  setTimeout(() => {
+  const cadastroEstaEncerrado = () => {
+    const limite = config?.limite_cadastro
+      ? new Date(config.limite_cadastro)
+      : new Date('2026-05-01T23:59:59-03:00');
+
+    return new Date() > limite;
+  };
+
+  useEffect(() => {
+    supabase
+      .from('configuracao_bolao')
+      .select('*')
+      .eq('id', 1)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Erro ao carregar configuração:', error);
+          return;
+        }
+
+        setConfig(data);
+      });
+  }, []);
+
+  // 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER
+  useEffect(() => {
+    if (!config) return;
+
+    if (abrirCadastro) {
+      if (cadastroEstaEncerrado()) {
+        mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
+        setIsLogin(true);
+      } else {
+        setIsLogin(false);
+      }
+    }
+  }, [config, abrirCadastro]);
+
+  const abrirTelaCadastro = () => {
     setStatusMsg('');
-    setStatusType('');
-  }, 7000);
-};
 
-  {/* 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER */}
-useEffect(() => {
-  if (!config) return;
-
-  const dataLimiteCadastro = config?.limite_cadastro
-    ? new Date(config.limite_cadastro)
-    : new Date('2026-05-01T23:59:59-03:00');
-
-  if (abrirCadastro) {
-    if (new Date() > dataLimiteCadastro) {
+    if (cadastroEstaEncerrado()) {
       mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
       setIsLogin(true);
-    } else {
-      setIsLogin(false);
+      return;
     }
-  }
-}, [config, abrirCadastro]);
+
+    setIsLogin(false);
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -280,20 +303,12 @@ useEffect(() => {
     const telefoneLimpo = telefone.trim();
     const emailLimpo = email.trim().toLowerCase();
 
-if (!isLogin) {
-  const dataLimiteCadastro = config?.limite_cadastro
-    ? new Date(config.limite_cadastro)
-    : new Date('2026-06-03T23:59:59-03:00');
+    if (!isLogin && cadastroEstaEncerrado()) {
+      setBusy(false);
+      mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
+      return;
+    }
 
-  const agora = new Date();
-
-  if (agora > dataLimiteCadastro) {
-    setBusy(false);
-    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
-    return;
-  }
-}
-    
     if (!isLogin && telefoneLimpo.length < 10) {
       setBusy(false);
       mensagem('erro', 'Informe um telefone/WhatsApp válido. Exemplo: +55 21 98199-1848');
@@ -301,12 +316,18 @@ if (!isLogin) {
     }
 
     const res = isLogin
-      ? await supabase.auth.signInWithPassword({ email: emailLimpo, password })
+      ? await supabase.auth.signInWithPassword({
+          email: emailLimpo,
+          password
+        })
       : await supabase.auth.signUp({
           email: emailLimpo,
           password,
           options: {
-            data: { nome: nomeLimpo, telefone: telefoneLimpo }
+            data: {
+              nome: nomeLimpo,
+              telefone: telefoneLimpo
+            }
           }
         });
 
@@ -337,94 +358,92 @@ if (!isLogin) {
       return;
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase());
-    mensagem(error ? 'erro' : 'sucesso', error ? error.message : 'E-mail de recuperação enviado.');
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email.trim().toLowerCase()
+    );
+
+    mensagem(
+      error ? 'erro' : 'sucesso',
+      error ? error.message : 'E-mail de recuperação enviado.'
+    );
   };
 
- return (
-  <div className="auth">
-    <form onSubmit={submit} className="auth-card">
-      <h1>Bolão da Copa 2026</h1>
+  return (
+    <div className="auth">
+      <form onSubmit={submit} className="auth-card">
+        <h1>Bolão da Copa 2026</h1>
 
-      <p>{isLogin ? 'Acesse sua conta' : 'Crie sua conta'}</p>
+        <p>{isLogin ? 'Acesse sua conta' : 'Crie sua conta'}</p>
 
-      {statusMsg && (
-        <div className={`auth-status ${statusType}`}>
-          {statusMsg}
-        </div>
-      )}
+        {statusMsg && (
+          <div className={`auth-status ${statusType}`}>
+            {statusMsg}
+          </div>
+        )}
 
-      {!isLogin && (
-        <>
-          <input
-            placeholder="Nome completo"
-            value={nome}
-            onChange={e => setNome(e.target.value)}
-            required
-          />
+        {!isLogin && (
+          <>
+            <input
+              placeholder="Nome completo"
+              value={nome}
+              onChange={e => setNome(e.target.value)}
+              required
+            />
 
-          <input
-            placeholder="Telefone/WhatsApp (ex: +55 21 98199-1848)"
-            value={telefone}
-            onChange={e => setTelefone(e.target.value)}
-            required
-          />
-        </>
-      )}
+            <input
+              placeholder="Telefone/WhatsApp (ex: +55 21 98199-1848)"
+              value={telefone}
+              onChange={e => setTelefone(e.target.value)}
+              required
+            />
+          </>
+        )}
 
-      <input
-        placeholder="E-mail"
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
+        <input
+          placeholder="E-mail"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
 
-      <input
-        placeholder="Senha"
-        type="password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-      />
+        <input
+          placeholder="Senha"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
 
-      <button disabled={busy}>
-        {busy ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
-      </button>
+        <button disabled={busy}>
+          {busy ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
+        </button>
 
-      <button
-        type="button"
-        className="link"
-        onClick={() => {
-          setStatusMsg('');
-
-          if (isLogin) {
-            const dataLimiteCadastro = config?.limite_cadastro
-              ? new Date(config.limite_cadastro)
-              : new Date('2026-06-03T23:59:59-03:00');
-
-            if (new Date() > dataLimiteCadastro) {
-              mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
-              return;
+        <button
+          type="button"
+          className="link"
+          onClick={() => {
+            if (isLogin) {
+              abrirTelaCadastro();
+            } else {
+              setStatusMsg('');
+              setIsLogin(true);
             }
-          }
+          }}
+        >
+          {isLogin ? 'Criar conta' : 'Já tenho conta'}
+        </button>
 
-          setIsLogin(!isLogin);
-        }}
-      >
-        {isLogin ? 'Criar conta' : 'Já tenho conta'}
-      </button>
+        <button type="button" className="link" onClick={reset}>
+          Esqueci minha senha
+        </button>
 
-      <button type="button" className="link" onClick={reset}>
-        Esqueci minha senha
-      </button>
-
-      <a className="link" href="/landing/">
-        Voltar para página inicial
-      </a>
-    </form>
-  </div>
-);
+        <a className="link" href="/landing/">
+          Voltar para página inicial
+        </a>
+      </form>
+    </div>
+  );
 }
 
 async function fetchJogos(show){
