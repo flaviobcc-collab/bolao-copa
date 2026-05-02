@@ -442,21 +442,20 @@ const abrirTelaCadastro = () => {
           {busy ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
         </button>
 
-        <button
-          type="button"
-          className="link"
-          disabled={!config}
-          onClick={() => {
-            if (isLogin) {
-              abrirTelaCadastro();
-            } else {
-              setStatusMsg('');
-              setIsLogin(true);
-            }
-          }}
-        >
-          {isLogin ? 'Criar conta' : 'Já tenho conta'}
-        </button>
+       <button
+  type="button"
+  className="link"
+  onClick={() => {
+    if (isLogin) {
+      abrirTelaCadastro();
+    } else {
+      setStatusMsg('');
+      setIsLogin(true);
+    }
+  }}
+>
+  {isLogin ? 'Criar conta' : 'Já tenho conta'}
+</button>
 
         <button type="button" className="link" onClick={reset}>
           Esqueci minha senha
