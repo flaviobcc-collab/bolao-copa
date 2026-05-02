@@ -789,16 +789,33 @@ function Dashboard({show, user, profile, goRanking}){
     </div>
 
     <aside className="right-column">
-      <section className="side-card prize-widget">
-        <div className="side-title"><span>💰 Premiação estimada</span></div>
-        <div className="stat-row"><span>Total arrecadado</span><strong>R$ {premiacao.total.toFixed(2)}</strong></div>
-        <div className="stat-row"><span>Taxa operacional</span><strong>R$ {premiacao.taxaValor.toFixed(2)}</strong></div>
-        <div className="stat-row"><span>Valor líquido</span><strong>R$ {premiacao.liquido.toFixed(2)}</strong></div>
-        <div className="stat-row"><span>🥇 1º lugar</span><strong>R$ {premiacao.primeiro.toFixed(2)}</strong></div>
-        <div className="stat-row"><span>🥈 2º lugar</span><strong>R$ {premiacao.segundo.toFixed(2)}</strong></div>
-        <div className="stat-row"><span>🥉 3º lugar</span><strong>R$ {premiacao.terceiro.toFixed(2)}</strong></div>
-        <div className="score-help">Estimativa baseada em {users.length} participante(s), valor de R$ {(config?.valor_participacao || 20).toFixed(2)} e taxa operacional de {config?.percentual_operacional || 10}%.</div>
-      </section>
+     <section className="side-card prize-widget">
+  <div className="side-title">
+    <span>💰 Premiação estimada</span>
+  </div>
+
+  <div className="stat-row">
+    <span>Total arrecadado</span>
+    <strong>R$ {premiacao.total.toFixed(2)}</strong>
+  </div>
+
+  <div className="stat-row">
+    <span>Valor líquido para premiação</span>
+    <strong>R$ {premiacao.liquido.toFixed(2)}</strong>
+  </div>
+
+  <div className="prize-champion-box">
+    <div className="prize-trophy">🏆</div>
+    <span>Campeão do bolão</span>
+    <strong>R$ {premiacao.liquido.toFixed(2)}</strong>
+    <small>100% da premiação líquida</small>
+  </div>
+
+  <div className="score-help">
+    Estimativa baseada em {users.length} participante(s), valor de R$ {(config?.valor_participacao || 20).toFixed(2)} e taxa administrativa de {config?.percentual_operacional || 10}%.
+    A taxa estimada é de R$ {premiacao.taxaValor.toFixed(2)}.
+  </div>
+</section>
 
       <RankingWidget rows={rankingRows} goRanking={goRanking}/>
       <StatsWidget stats={myStats} position={myPosition}/>
