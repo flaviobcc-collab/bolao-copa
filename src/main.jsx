@@ -425,6 +425,7 @@ if (!isLogin) {
     </form>
   </div>
 );
+}
 
 async function fetchJogos(show){
   const { data, error } = await supabase.from('jogos_view').select('*').order('data_hora', { nullsFirst: false }).order('partida_numero');
