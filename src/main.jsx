@@ -305,13 +305,20 @@ function Auth({ show }) {
     }
   }, [config, abrirCadastro]);
 
-  const abrirTelaCadastro = () => {
-    setStatusMsg('');
+const abrirTelaCadastro = () => {
+  setStatusMsg('');
 
-    if (!config) {
-      mensagem('erro', 'Configuração do bolão ainda não carregada. Tente novamente.');
-      return;
-    }
+  // ainda carregando? não faz nada
+  if (!config) return;
+
+  if (cadastroEstaEncerrado()) {
+    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
+    setIsLogin(true);
+    return;
+  }
+
+  setIsLogin(false);
+};
 
     if (cadastroEstaEncerrado()) {
       mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
