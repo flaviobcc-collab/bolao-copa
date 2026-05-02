@@ -999,10 +999,11 @@ function Ranking({show}){
           <small>10%</small>
         </div>
 
-        <div className="score-help">
-          Valores calculados sobre o líquido após a taxa administrativa.
-          Participantes ativos: {rows.length}.
-        </div>
+      <div className="score-help">
+  Valores calculados sobre o líquido após a taxa administrativa.<br />
+  Critérios de desempate devem ser observados.<br />
+  Participantes ativos: {rows.length}.
+</div>
       </aside>
     </div>
   );
