@@ -544,7 +544,7 @@ async function loadStats() {
     </div>
   </div>
 )}
-     // INICIO DO CARD DE ESTATISTICAS
+    {/* INICIO DO CARD DE ESTATISTICAS */}
       {stats && (
   <div className="side-card stats-widget" style={{marginTop:'20px'}}>
     <div className="side-title">
