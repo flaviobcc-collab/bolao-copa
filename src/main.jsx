@@ -666,6 +666,8 @@ return rows.map((r, i) => {
   anterior = atual;
   return atual;
 });
+}
+
 function initials(nameOrEmail){
   const base = (nameOrEmail || 'U').trim();
   const parts = base.replace(/@.*/, '').split(/\s+/).filter(Boolean);
