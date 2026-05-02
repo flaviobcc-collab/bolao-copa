@@ -259,7 +259,7 @@ useEffect(() => {
 
   const dataLimiteCadastro = config?.limite_cadastro
     ? new Date(config.limite_cadastro)
-    : new Date('2026-06-03T23:59:59-03:00');
+    : new Date('2026-05-01T23:59:59-03:00');
 
   if (abrirCadastro) {
     if (new Date() > dataLimiteCadastro) {
