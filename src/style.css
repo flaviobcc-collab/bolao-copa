@@ -378,3 +378,37 @@ body{background:#f6f8f7;color:#13251c}
 .nav-rules:hover {
   background: #dff2e8;
 }
+
+
+.prize-champion-box {
+  margin: 18px 0;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f4faf7;
+  border: 1px solid rgba(0, 110, 70, 0.12);
+  text-align: center;
+}
+
+.prize-trophy {
+  font-size: 42px;
+  margin-bottom: 8px;
+}
+
+.prize-champion-box span {
+  display: block;
+  font-weight: 800;
+  color: #123326;
+  margin-bottom: 6px;
+}
+
+.prize-champion-box strong {
+  display: block;
+  font-size: 28px;
+  color: #087447;
+  margin-bottom: 4px;
+}
+
+.prize-champion-box small {
+  color: #5f756b;
+  font-weight: 600;
+}
