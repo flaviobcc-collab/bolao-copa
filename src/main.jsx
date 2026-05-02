@@ -447,7 +447,36 @@ function MinhaParticipacao({user, profile, setProfile, show}) {
 
   const qrBase64 = pix?.qr_code_base64 || profile?.pix_qrcode;
   const copiaCola = pix?.qr_code || profile?.pix_copia_cola;
-  const statusTexto = pagamentoConfirmado ? 'Confirmado' : 'Pendente';
+ const statusTexto = pagamentoConfirmado ? 'Confirmado' : 'Pendente';
+
+// 🔽 ADICIONE AQUI
+  
+useEffect(() => {
+  loadStats();
+}, []);
+
+async function loadStats() {
+  const jogos = await fetchJogos(show);
+
+  const { data: users } = await supabase
+    .from('participantes')
+    .select('*')
+    .eq('ativo', true)
+    .is('deleted_at', null);
+
+  const { data: pals } = await supabase
+    .from('palpites')
+    .select('*');
+
+  const ranking = buildRanking(users || [], pals || [], jogos);
+
+  const me = ranking.find(r => r.id === user.id);
+
+  if (me) {
+    setStats(me);
+  }
+}
+// 🔼 ATÉ AQUI
 
   return (
     <section className="participacao-panel">
@@ -512,6 +541,58 @@ function MinhaParticipacao({user, profile, setProfile, show}) {
       }}>
         Copiar código Pix
       </button>
+    </div>
+  </div>
+)}
+     // INICIO DO CARD DE ESTATISTICAS
+      {stats && (
+  <div className="side-card stats-widget" style={{marginTop:'20px'}}>
+    <div className="side-title">
+      <span>📊 Minhas Estatísticas</span>
+    </div>
+
+    <div className="stat-row">
+      <span>Posição no ranking</span>
+      <strong>{stats.classificacao}º</strong>
+    </div>
+
+    <div className="stat-row">
+      <span>Pontuação</span>
+      <strong>{stats.pontos} pts</strong>
+    </div>
+
+    <div className="stat-row">
+      <span>Jogos pontuados</span>
+      <strong>{stats.jogosPontuados}</strong>
+    </div>
+
+    <div className="stat-row">
+      <span>Aproveitamento</span>
+      <strong>{stats.aproveitamento}%</strong>
+    </div>
+
+    <h4>Desempenho</h4>
+
+    <div className="tie-grid">
+      <div className="tie exact">
+        <span>Na mosca</span>
+        <strong>{stats.naMosca}</strong>
+      </div>
+
+      <div className="tie three">
+        <span>3 pts</span>
+        <strong>{stats.p3}</strong>
+      </div>
+
+      <div className="tie two">
+        <span>2 pts</span>
+        <strong>{stats.p2}</strong>
+      </div>
+
+      <div className="tie one">
+        <span>1 pt</span>
+        <strong>{stats.p1}</strong>
+      </div>
     </div>
   </div>
 )}
