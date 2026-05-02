@@ -1083,3 +1083,31 @@ body{background:#f6f8f7;color:#13251c}
   color: #5f756b;
   font-weight: 600;
 }
+
+{/* CSS PARA AS ESTATISTICAS EM MINHA PARTICIPAÇÃO */}
+.participacao-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 22px;
+  align-items: start;
+}
+
+.participacao-left {
+  min-width: 0;
+}
+
+.participacao-right {
+  position: sticky;
+  top: 90px;
+  align-self: start;
+}
+
+@media (max-width: 900px) {
+  .participacao-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .participacao-right {
+    position: static;
+  }
+}
