@@ -11,6 +11,13 @@ const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 const FLAG_BASE = 'https://flagcdn.com/w40/';
 const flagSrc = (code) => code ? `${FLAG_BASE}${code}.png` : '';
 
+function criarContaBloqueado() {
+  alert("Prazo de cadastro finalizado. Não é mais possível criar novas contas para este bolão.");
+}
+
+// deixa disponível globalmente
+window.criarContaBloqueado = criarContaBloqueado;
+
 function normalizaStatus(status, jogo) {
   if (status) return status;
   const temResultado = jogo?.gols_a !== null && jogo?.gols_a !== undefined && jogo?.gols_b !== null && jogo?.gols_b !== undefined;
