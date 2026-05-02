@@ -246,12 +246,11 @@ function Auth({ show }) {
 
   const obterLimiteCadastro = () => {
     if (!config?.limite_cadastro) {
-      return new Date('2026-05-01T23:59:59-03:00');
+      return null;
     }
 
     const limite = new Date(config.limite_cadastro);
 
-    // Se a data vier sem horário útil, garante o fim do dia
     if (
       limite.getHours() === 0 &&
       limite.getMinutes() === 0 &&
@@ -265,14 +264,10 @@ function Auth({ show }) {
 
   const cadastroEstaEncerrado = () => {
     const limite = obterLimiteCadastro();
-    const agora = new Date();
 
-    console.log('LIMITE BANCO:', config?.limite_cadastro);
-    console.log('LIMITE CONVERTIDO:', limite);
-    console.log('AGORA:', agora);
-    console.log('BLOQUEADO?', agora > limite);
+    if (!limite) return false;
 
-    return agora > limite;
+    return new Date() > limite;
   };
 
   useEffect(() => {
@@ -291,7 +286,7 @@ function Auth({ show }) {
       });
   }, []);
 
-   // 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER
+  // 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER
   useEffect(() => {
     if (!config) return;
 
@@ -471,7 +466,6 @@ function Auth({ show }) {
     </div>
   );
 }
-
 async function fetchJogos(show){
   const { data, error } = await supabase.from('jogos_view').select('*').order('data_hora', { nullsFirst: false }).order('partida_numero');
   if (error) { show?.(`Erro ao carregar jogos: ${error.message}`); return []; }
