@@ -396,6 +396,7 @@ function MeuPerfil({user, profile, setProfile, show}){
 function MinhaParticipacao({user, profile, setProfile, show}) {
   const [pix, setPix] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState(null);
 
   const pagamentoConfirmado = profile?.pagamento_status === 'confirmado';
   const pagamentoPendente = !pagamentoConfirmado;
