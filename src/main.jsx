@@ -225,7 +225,7 @@ function Auth({show}) {
   const params = new URLSearchParams(window.location.search);
   const abrirCadastro = params.get('cadastro') === '1';
 
-  const [isLogin, setIsLogin] = useState(!abrirCadastro);
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nome, setNome] = useState('');
