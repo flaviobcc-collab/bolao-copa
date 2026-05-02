@@ -11,12 +11,15 @@ const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 const FLAG_BASE = 'https://flagcdn.com/w40/';
 const flagSrc = (code) => code ? `${FLAG_BASE}${code}.png` : '';
 
-function criarContaBloqueado() {
-  alert("Prazo de cadastro finalizado. Não é mais possível criar novas contas para este bolão.");
+const DATA_LIMITE_CADASTRO = new Date('2026-05-02T12:00:00');
+
+function cadastroEncerrado() {
+  return new Date() > DATA_LIMITE_CADASTRO;
 }
 
-// deixa disponível globalmente
-window.criarContaBloqueado = criarContaBloqueado;
+function avisarCadastroEncerrado() {
+  alert("Prazo de cadastro finalizado. Não é mais possível criar novas contas para este bolão.");
+}
 
 function normalizaStatus(status, jogo) {
   if (status) return status;
