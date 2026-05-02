@@ -341,8 +341,90 @@ if (!isLogin) {
     mensagem(error ? 'erro' : 'sucesso', error ? error.message : 'E-mail de recuperação enviado.');
   };
 
-  return <div className="auth"><form onSubmit={submit} className="auth-card"><h1>Bolão da Copa 2026</h1><p>{isLogin?'Acesse sua conta':'Crie sua conta'}</p>{statusMsg && <div className={`auth-status ${statusType}`}>{statusMsg}</div>}{!isLogin && <><input placeholder="Nome completo" value={nome} onChange={e=>setNome(e.target.value)} required/><input placeholder="Telefone/WhatsApp (ex: +55 21 98199-1848)" value={telefone} onChange={e=>setTelefone(e.target.value)} required/></>}<input placeholder="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><input placeholder="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><button disabled={busy}>{busy?'Aguarde...':isLogin?'Entrar':'Cadastrar'}</button><button type="button" className="link" onClick={()=>{setIsLogin(!isLogin); setStatusMsg('');}}>{isLogin?'Criar conta':'Já tenho conta'}</button><button type="button" className="link" onClick={reset}>Esqueci minha senha</button><a className="link" href="/landing/">Voltar para página inicial</a></form></div>
-}
+ return (
+  <div className="auth">
+    <form onSubmit={submit} className="auth-card">
+      <h1>Bolão da Copa 2026</h1>
+
+      <p>{isLogin ? 'Acesse sua conta' : 'Crie sua conta'}</p>
+
+      {statusMsg && (
+        <div className={`auth-status ${statusType}`}>
+          {statusMsg}
+        </div>
+      )}
+
+      {!isLogin && (
+        <>
+          <input
+            placeholder="Nome completo"
+            value={nome}
+            onChange={e => setNome(e.target.value)}
+            required
+          />
+
+          <input
+            placeholder="Telefone/WhatsApp (ex: +55 21 98199-1848)"
+            value={telefone}
+            onChange={e => setTelefone(e.target.value)}
+            required
+          />
+        </>
+      )}
+
+      <input
+        placeholder="E-mail"
+        type="email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+      />
+
+      <input
+        placeholder="Senha"
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        required
+      />
+
+      <button disabled={busy}>
+        {busy ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
+      </button>
+
+      <button
+        type="button"
+        className="link"
+        onClick={() => {
+          setStatusMsg('');
+
+          if (isLogin) {
+            const dataLimiteCadastro = config?.limite_cadastro
+              ? new Date(config.limite_cadastro)
+              : new Date('2026-06-03T23:59:59-03:00');
+
+            if (new Date() > dataLimiteCadastro) {
+              mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
+              return;
+            }
+          }
+
+          setIsLogin(!isLogin);
+        }}
+      >
+        {isLogin ? 'Criar conta' : 'Já tenho conta'}
+      </button>
+
+      <button type="button" className="link" onClick={reset}>
+        Esqueci minha senha
+      </button>
+
+      <a className="link" href="/landing/">
+        Voltar para página inicial
+      </a>
+    </form>
+  </div>
+);
 
 async function fetchJogos(show){
   const { data, error } = await supabase.from('jogos_view').select('*').order('data_hora', { nullsFirst: false }).order('partida_numero');
