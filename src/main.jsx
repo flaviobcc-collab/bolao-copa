@@ -291,7 +291,7 @@ function Auth({ show }) {
       });
   }, []);
 
-  // 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER
+   // 🔒 BLOQUEIO DE CADASTRO - NÃO REMOVER
   useEffect(() => {
     if (!config) return;
 
@@ -305,20 +305,10 @@ function Auth({ show }) {
     }
   }, [config, abrirCadastro]);
 
-const abrirTelaCadastro = () => {
-  setStatusMsg('');
+  const abrirTelaCadastro = () => {
+    setStatusMsg('');
 
-  // ainda carregando? não faz nada
-  if (!config) return;
-
-  if (cadastroEstaEncerrado()) {
-    mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
-    setIsLogin(true);
-    return;
-  }
-
-  setIsLogin(false);
-};
+    if (!config) return;
 
     if (cadastroEstaEncerrado()) {
       mensagem('erro', 'O prazo para inscrição no bolão foi encerrado.');
@@ -457,6 +447,7 @@ const abrirTelaCadastro = () => {
         <button
           type="button"
           className="link"
+          disabled={!config}
           onClick={() => {
             if (isLogin) {
               abrirTelaCadastro();
