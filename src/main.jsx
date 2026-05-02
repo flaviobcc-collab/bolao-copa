@@ -480,6 +480,8 @@ async function loadStats() {
 
   return (
     <section className="participacao-panel">
+      <div className="participacao-layout">
+      <div className="participacao-left">
       <div className="panel-head">
         <div>
           <h3>💰 Minha Participação</h3>
@@ -544,8 +546,11 @@ async function loadStats() {
     </div>
   </div>
 )}
-    {/* INICIO DO CARD DE ESTATISTICAS */}
-      {stats && (
+      </div>
+
+      <div className="participacao-right">
+        {/* INICIO DO CARD DE ESTATISTICAS */}
+        {stats && (
   <div className="side-card stats-widget" style={{marginTop:'20px'}}>
     <div className="side-title">
       <span>📊 Minhas Estatísticas</span>
@@ -596,6 +601,8 @@ async function loadStats() {
     </div>
   </div>
 )}
+      </div>
+    </div>
     </section>
   );
 }
