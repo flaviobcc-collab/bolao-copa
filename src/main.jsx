@@ -638,24 +638,34 @@ function buildRanking(users, pals, jogos){
       (a.nome || a.email || '').localeCompare(b.nome || b.email || '')
     );
 
-  return rows.map((r, i, arr) => {
-    if (i === 0) return { ...r, classificacao: 1 };
+ let classificacaoAtual = 1;
+let anterior = null;
 
-    const anterior = arr[i - 1];
+return rows.map((r, i) => {
+  if (i === 0) {
+    anterior = { ...r, classificacao: 1 };
+    return anterior;
+  }
 
-    const empatado =
-      r.pontos === anterior.pontos &&
-      r.naMosca === anterior.naMosca &&
-      r.p3 === anterior.p3 &&
-      r.p2 === anterior.p2 &&
-      r.p1 === anterior.p1;
+  const empatado =
+    r.pontos === anterior.pontos &&
+    r.naMosca === anterior.naMosca &&
+    r.p3 === anterior.p3 &&
+    r.p2 === anterior.p2 &&
+    r.p1 === anterior.p1;
 
-    return {
-      ...r,
-      classificacao: empatado ? anterior.classificacao : i + 1
-    };
-  });
-}
+  if (!empatado) {
+    classificacaoAtual = i + 1;
+  }
+
+  const atual = {
+    ...r,
+    classificacao: classificacaoAtual
+  };
+
+  anterior = atual;
+  return atual;
+});
 function initials(nameOrEmail){
   const base = (nameOrEmail || 'U').trim();
   const parts = base.replace(/@.*/, '').split(/\s+/).filter(Boolean);
